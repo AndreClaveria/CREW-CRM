@@ -1,0 +1,105 @@
+export const adminStyles = {
+  container: {
+    padding: "var(--spacing-big)",
+    maxWidth: "1200px",
+    margin: "0 auto",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "var(--spacing-big)",
+  },
+  title: {
+    fontSize: "var(--font-size-medium)",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+    margin: 0,
+  },
+  tableContainer: {
+    backgroundColor: "var(--color-white)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    overflow: "hidden",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+  },
+  th: {
+    backgroundColor: "var(--table-header-bg)",
+    padding: "var(--spacing-normal)",
+    textAlign: "left",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--table-header-text)",
+    borderBottom: "var(--border-width) solid var(--table-border)",
+  },
+  td: {
+    padding: "var(--spacing-normal)",
+    borderBottom: "var(--border-width) solid var(--table-border)",
+    color: "var(--table-text)",
+  },
+  actionButtons: {
+    display: "flex",
+    gap: "var(--spacing-small)",
+  },
+  loadingMessage: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "200px",
+    fontSize: "var(--font-size-medium)",
+    color: "var(--color-grey-600)",
+  },
+  errorMessage: {
+    backgroundColor: "var(--color-error-light)",
+    color: "var(--color-error-dark)",
+    padding: "var(--spacing-normal)",
+    borderRadius: "var(--border-radius)",
+    marginBottom: "var(--spacing-normal)",
+  },
+  searchContainer: {
+    marginBottom: "var(--spacing-normal)",
+    display: "flex",
+    gap: "var(--spacing-normal)",
+  },
+  searchInput: {
+    flex: 1,
+    padding: "var(--spacing-small)",
+    border: "var(--border-width) solid var(--table-border)",
+    borderRadius: "var(--border-radius)",
+    fontSize: "var(--font-size-normal)",
+  },
+  filterSelect: {
+    padding: "var(--spacing-small)",
+    border: "var(--border-width) solid var(--table-border)",
+    borderRadius: "var(--border-radius)",
+    fontSize: "var(--font-size-normal)",
+    minWidth: "150px",
+  },
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "var(--spacing-small)",
+    marginTop: "var(--spacing-normal)",
+  },
+  paginationButton: {
+    padding: "var(--spacing-small) var(--spacing-normal)",
+    border: "var(--border-width) solid var(--table-border)",
+    borderRadius: "var(--border-radius)",
+    backgroundColor: "var(--color-white)",
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: "var(--table-row-hover-bg)",
+    },
+    "&:disabled": {
+      backgroundColor: "var(--color-grey-200)",
+      cursor: "not-allowed",
+    },
+  },
+  paginationInfo: {
+    color: "var(--color-grey-600)",
+    fontSize: "var(--font-size-small)",
+  },
+};

@@ -1,0 +1,163 @@
+import { table } from "console";
+
+// src/styles/pages/dashboard/admin/adminDashboardStyles.ts
+export const adminDashboardStyles = {
+  container: {
+    maxWidth: "1400px",
+    margin: "0 auto",
+    padding: "var(--spacing-big) var(--spacing-normal)",
+  },
+  pageTitle: {
+    fontSize: "var(--font-size-big)",
+    fontWeight: "var(--font-weight-bold)",
+    marginBottom: "30px",
+    color: "var(--color-text)",
+  },
+  contentGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "30px",
+    alignItems: "start",
+  },
+  sectionHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "15px",
+  },
+  sectionTitle: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    fontSize: "var(--font-size-medium)",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+  },
+  sectionIcon: {
+    color: "var(--color-blue)",
+    fontSize: "22px",
+  },
+  dataCard: {
+    background: "var(--color-white)",
+    borderRadius: "var(--border-radius)",
+    padding: "var(--spacing-normal)",
+    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.05)",
+    marginBottom: "30px",
+  },
+  actionButtonsContainer: {
+    display: "flex",
+    gap: "10px",
+    justifyContent: "flex-end",
+    marginBottom: "30px",
+  },
+  statsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "20px",
+    marginBottom: "30px",
+  },
+  statCard: {
+    background: "var(--color-white)",
+    borderRadius: "var(--border-radius)",
+    padding: "20px",
+    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.05)",
+    textAlign: "center" as const,
+    display: "flex",
+    flexDirection: "column" as const,
+    alignItems: "center",
+    gap: "10px",
+  },
+  statValue: {
+    fontSize: "32px",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-blue)",
+  },
+  statLabel: {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-grey-600)",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse" as const,
+    fontSize: "var(--font-size-small)",
+  },
+  tableHeader: {
+    textAlign: "left" as const,
+    padding: "12px 15px",
+    borderBottom: "var(--border-width) solid var(--color-grey-400)",
+    color: "var(--color-grey-600)",
+    fontWeight: "var(--font-weight-bold)",
+  },
+  tableRow: {
+    borderBottom: "var(--border-width) solid var(--color-grey-400)",
+    transition: "var(--animation-transition)",
+    "&:hover": {
+      backgroundColor: "var(--color-grey-100)",
+    },
+  },
+  tableCell: {
+    padding: "12px 15px",
+  },
+  tableCellActions: {
+    padding: "8px 15px",
+    textAlign: "right" as const,
+    whiteSpace: "nowrap" as const,
+  },
+  viewMoreRow: {
+    borderBottom: "none",
+  },
+  viewMoreCell: {
+    padding: "15px",
+  },
+  viewMoreContent: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    color: "var(--color-grey-600)",
+  },
+  statusBadge: {
+    display: "inline-block",
+    borderRadius: "30px",
+    padding: "3px 10px",
+    fontSize: "var(--font-size-small)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-white)",
+  },
+  healthCheckContainer: {
+    marginTop: "30px",
+    display: "flex",
+    justifyContent: "center",
+  },
+  emptyState: {
+    textAlign: "center" as const,
+    padding: "30px 0",
+    color: "var(--color-grey-600)",
+  },
+  searchInputContainer: {
+    position: "relative" as const,
+    marginBottom: "20px",
+  },
+  searchInput: {
+    width: "100%",
+    padding: "10px 15px 10px 40px",
+    borderRadius: "var(--border-radius)",
+    border: "var(--border-width) solid var(--color-grey-400)",
+    fontSize: "var(--font-size-small)",
+  },
+  searchIcon: {
+    position: "absolute" as const,
+    left: "15px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    color: "var(--color-grey-500)",
+  },
+  roleBadge: {
+    display: "inline-block",
+    borderRadius: "30px",
+    padding: "3px 10px",
+    fontSize: "var(--font-size-small)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-white)",
+    textTransform: "capitalize" as const,
+  },
+};

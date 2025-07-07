@@ -1,0 +1,63 @@
+export const modalStyles = {
+  overlay: {
+    position: "fixed" as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    backgroundColor: "white",
+    borderRadius: "8px",
+    padding: "24px",
+    width: "90%",
+    maxWidth: "500px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+  },
+  title: {
+    fontSize: "20px",
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: "16px",
+  },
+  content: {
+    fontSize: "16px",
+    color: "#666",
+    marginBottom: "24px",
+    lineHeight: "1.5",
+  },
+  actions: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "12px",
+  },
+  cancelButton: {
+    padding: "8px 16px",
+    backgroundColor: "#f5f5f5",
+    color: "#333",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+    "&:hover": {
+      backgroundColor: "#e5e5e5",
+    },
+  },
+  confirmButton: {
+    padding: "8px 16px",
+    backgroundColor: "#E74C3C",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+    "&:hover": {
+      backgroundColor: "#C0392B",
+    },
+  },
+};
