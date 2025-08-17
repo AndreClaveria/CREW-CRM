@@ -96,8 +96,8 @@ services:
       - JWT_EXPIRES_IN=6h
       - LOG_LEVEL=info
       - SERVICE_NAME=autenthication-service
-      - GOOGLE_CLIENT_ID=
-      - GOOGLE_CLIENT_SECRET=
+      - GOOGLE_CLIENT_ID=fake-google-client-id-for-dev
+      - GOOGLE_CLIENT_SECRET=fake-google-client-secret-for-dev
       - GOOGLE_CALLBACK_URL=http://localhost:3002/api/auth/google/callback
       - REDIS_URL=redis://:crew-crm-redis-password@redis:6379
       - REDIS_HOST=redis
@@ -137,14 +137,14 @@ services:
       - BREVO_API_KEY=
       - SMTP_HOST=smtp-relay.brevo.com
       - SMTP_PORT=587
-      - SMTP_USER=
-      - SMTP_PASSWORD=
+      - SMTP_USER=fake-smtp-user-for-dev
+      - SMTP_PASSWORD=fake-smtp-password-for-dev
       - EMAIL_FROM=noreply@andreclaveria-crm.com
       - EMAIL_FROM_NAME=CRM AndreClaveria
       - FRONTEND_URL=http://localhost:3000
       - AUTH_SERVICE_URL=http://authentication-service:3002
       - DATABASE_SERVICE_URL=http://bdd-service:3001
-      - DISCORD_INFO_WEBHOOK=
+      - DISCORD_INFO_WEBHOOK=https://discord.com/api/webhooks/fake/webhook-for-dev
       - SERVICE_NAME=NOTIFICATIONS-SERVICE_NAME
       - ENABLE_MONITORING=true
       - MONITORING_INTERVAL_MINUTES=60
@@ -188,7 +188,7 @@ services:
       - AUTH_SERVICE_URL=http://authentication-service:3002
       - DATABASE_SERVICE_URL=http://bdd-service:3001
       - EMAIL_SERVICE_URL=http://notification-mail-sms-service:3003
-      - DISCORD_WEBHOOK_URL=
+      - DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/fake/webhook-for-dev
       - SERVICE_NAME=METRICS
       - ENABLE_MONITORING=true
       - MONITORING_INTERVAL_MINUTES=60
@@ -232,7 +232,7 @@ services:
       - JWT_SECRET=your-secret-key
       - JWT_EXPIRES_IN=6h
       - LOG_LEVEL=info
-      - OPENAI_API_KEY=
+      - OPENAI_API_KEY=sk-fake-openai-key-for-developments
       - SERVICE_NAME=service-ia
     depends_on:
       mongo:
@@ -307,7 +307,7 @@ services:
       - NEXT_PUBLIC_API_URL_METRICS=http://localhost:3004/api/
       - NEXT_PUBLIC_API_URL_IA=http://localhost:3005/api/
       - NEXT_PUBLIC_API_URL_PAYMENT=http://localhost:3006/api/
-      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_fake_stripe_publishable_key_for_dev
     depends_on:
       mongo:
         condition: service_healthy
