@@ -582,39 +582,245 @@ jobs:
         if: always()
         run: docker compose down -v
 
-  # Génération de version
+  # Génération de version sémantique
   version:
-    name: Generate Version
+    name: Generate Semantic Version
     runs-on: ubuntu-latest
     needs: [integration-test, performance-test]
     if: github.event_name == 'push' && (success() || needs.performance-test.result == 'skipped')
     outputs:
       version: ${{ steps.version.outputs.version }}
       branch: ${{ steps.version.outputs.branch }}
+      is_release: ${{ steps.version.outputs.is_release }}
+      bump_type: ${{ steps.analyze.outputs.bump_type }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Récupérer tout l'historique pour les tags
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate version
+      - name: Get latest semantic version tag
+        id: latest_tag
+        run: |
+          # Récupérer le dernier tag qui suit le pattern v*.*.* 
+          LATEST_TAG=$(git tag -l "v*.*.*" --sort=-version:refname | head -n1)
+          if [ -z "$LATEST_TAG" ]; then
+            LATEST_TAG="v0.0.0"
+            echo "🏷️ No previous tags found, starting from v0.0.0"
+          else
+            echo "🏷️ Latest semantic tag found: $LATEST_TAG"
+          fi
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+
+      - name: Analyze commit messages for semantic versioning
+        id: analyze
+        run: |
+          LATEST_TAG="${{ steps.latest_tag.outputs.latest_tag }}"
+
+          # Récupérer les commits depuis le dernier tag
+          if [ "$LATEST_TAG" != "v0.0.0" ]; then
+            COMMITS=$(git log ${LATEST_TAG}..HEAD --oneline --pretty=format:"%s")
+          else
+            COMMITS=$(git log --oneline --pretty=format:"%s" | head -10)
+          fi
+
+          echo "📝 Analyzing commits since $LATEST_TAG:"
+          echo "$COMMITS"
+
+          # Déterminer le type de version bump
+          BUMP_TYPE="patch"  # Par défaut
+
+          # Vérifier les breaking changes (MAJOR)
+          if echo "$COMMITS" | grep -qiE "^(feat|fix|perf|refactor)(\(.+\))?!:|BREAKING CHANGE|breaking change"; then
+            BUMP_TYPE="major"
+            echo "🚨 Breaking changes detected → MAJOR version bump"
+          # Vérifier les nouvelles features (MINOR)
+          elif echo "$COMMITS" | grep -qiE "^feat(\(.+\))?:|^feature(\(.+\))?:|^add(\(.+\))?:"; then
+            BUMP_TYPE="minor"
+            echo "✨ New features detected → MINOR version bump"
+          # Vérifier les fixes (PATCH)
+          elif echo "$COMMITS" | grep -qiE "^fix(\(.+\))?:|^bug(\(.+\))?:|^hotfix(\(.+\))?:|^patch(\(.+\))?:"; then
+            BUMP_TYPE="patch"
+            echo "🔧 Bug fixes detected → PATCH version bump"
+          # Si aucun pattern reconnu, PATCH par défaut
+          else
+            BUMP_TYPE="patch"
+            echo "📝 Standard commits detected → PATCH version bump (default)"
+          fi
+
+          echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Calculate new semantic version
         id: version
         run: |
-          if [[ ${{ github.ref }} == 'refs/heads/prod' ]]; then
-            VERSION="v1.0.${{ github.run_number }}"
-            BRANCH="production"
-          elif [[ ${{ github.ref }} == 'refs/heads/develop' ]]; then
-            SHORT_SHA=$(git rev-parse --short HEAD)
-            VERSION="develop-${{ github.run_number }}-$SHORT_SHA"
-            BRANCH="development"
+          LATEST_TAG="${{ steps.latest_tag.outputs.latest_tag }}"
+          BUMP_TYPE="${{ steps.analyze.outputs.bump_type }}"
+
+          # Extraire les numéros de version (enlever le 'v')
+          if [ "$LATEST_TAG" = "v0.0.0" ]; then
+            MAJOR=1
+            MINOR=0
+            PATCH=0
           else
-            VERSION="test-${{ github.run_number }}"
-            BRANCH="test"
+            VERSION_NUMBERS=$(echo $LATEST_TAG | sed 's/v//')
+            MAJOR=$(echo $VERSION_NUMBERS | cut -d. -f1)
+            MINOR=$(echo $VERSION_NUMBERS | cut -d. -f2)
+            PATCH=$(echo $VERSION_NUMBERS | cut -d. -f3)
+          fi
+
+          echo "📊 Current version: $MAJOR.$MINOR.$PATCH"
+
+          # Incrémenter selon le type de bump
+          case $BUMP_TYPE in
+            "major")
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              echo "🔥 Incrementing MAJOR: $MAJOR.0.0"
+              ;;
+            "minor")
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              echo "✨ Incrementing MINOR: $MAJOR.$MINOR.0"
+              ;;
+            "patch")
+              PATCH=$((PATCH + 1))
+              echo "🔧 Incrementing PATCH: $MAJOR.$MINOR.$PATCH"
+              ;;
+          esa
+          # Générer la version finale selon la branche
+          SHORT_SHA=$(git rev-parse --short HEAD)
+
+          if [[ ${{ github.ref }} == 'refs/heads/prod' ]]; then
+            VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+            BRANCH="production"
+            IS_RELEASE="true"
+            echo "🚀 Production release: $VERSION"
+          elif [[ ${{ github.ref }} == 'refs/heads/develop' ]]; then
+            VERSION="v${MAJOR}.${MINOR}.${PATCH}-dev.${SHORT_SHA}"
+            BRANCH="development"
+            IS_RELEASE="false"
+            echo "🔨 Development pre-release: $VERSION"
+          else
+            BRANCH_NAME=$(echo ${{ github.ref_name }} | sed 's/[^a-zA-Z0-9]/-/g')
+            VERSION="v${MAJOR}.${MINOR}.${PATCH}-${BRANCH_NAME}.${SHORT_SHA}"
+            BRANCH="feature"
+            IS_RELEASE="false"
+            echo "🌿 Feature pre-release: $VERSION"
           fi
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
-          echo "🏷️ Generated version: $VERSION for $BRANCH"
+          echo "is_release=$IS_RELEASE" >> $GITHUB_OUTPUT
 
+          echo "🏷️ Final version: $VERSION"
+          echo "📈 Version progression: $LATEST_TAG → $VERSION ($BUMP_TYPE bump)"
+
+      - name: Create and push Git tag (production only)
+        if: github.ref == 'refs/heads/prod'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Configuration Git pour GitHub Actions
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Créer le tag avec message détaillé
+          git tag -a $VERSION -m "🚀 Release $VERSION
+
+          📋 Changes:
+          - Build: #${{ github.run_number }}
+          - Commit: ${{ github.sha }}
+          - Branch: ${{ github.ref_name }}
+          - Type: ${{ steps.analyze.outputs.bump_type }} version bump
+
+          🤖 Auto-generated by CREW-CRM CI/CD Pipeline"
+
+          # Pousser le tag
+          git push origin $VERSION
+          echo "✅ Created and pushed tag: $VERSION"
+
+      - name: Create GitHub Release (production only)
+        if: github.ref == 'refs/heads/prod'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: "🚀 CREW-CRM ${{ steps.version.outputs.version }}"
+          body: |
+            ## 🎉 CREW-CRM Release ${{ steps.version.outputs.version }}
+
+            **📊 Version Information:**
+            - **Type:** ${{ steps.analyze.outputs.bump_type }} version bump
+            - **Build:** #${{ github.run_number }}
+            - **Commit:** ${{ github.sha }}
+            - **Date:** ${{ github.event.head_commit.timestamp }}
+
+            **✅ Services Included:**
+            - 🔐 Authentication Service (port 3002)
+            - 🗄️ Database Service (port 3001)
+            - 📧 Notification Service (port 3003)
+            - 📊 Metrics Service (port 3004)
+            - 🤖 AI Service (port 3005)
+            - 💳 Payment Service (port 3006)
+            - 🌐 Frontend (Next.js, port 3000)
+
+            **🔧 Infrastructure:**
+            - MongoDB + Redis
+            - Docker Compose
+            - Full CI/CD Pipeline
+            - Security Scanning
+            - Performance Testing
+
+            **🛡️ Security:**
+            - NPM Audit passed
+            - ESLint Security checks
+            - Semgrep SAST analysis
+            - Container vulnerability scanning
+
+            ---
+
+            **📦 Docker Images:**
+            ```bash
+            docker pull crew-crm-authentication-service:${{ steps.version.outputs.version }}
+            docker pull crew-crm-bdd-service:${{ steps.version.outputs.version }}
+            docker pull crew-crm-notification-mail-sms-service:${{ steps.version.outputs.version }}
+            docker pull crew-crm-metrics-service:${{ steps.version.outputs.version }}
+            docker pull crew-crm-service-ia:${{ steps.version.outputs.version }}
+            docker pull crew-crm-payment-service:${{ steps.version.outputs.version }}
+            docker pull crew-crm-frontend:${{ steps.version.outputs.version }}
+            ```
+
+            **🚀 Quick Start:**
+            ```bash
+            git checkout ${{ steps.version.outputs.version }}
+            docker-compose up -d
+            ```
+          draft: false
+          prerelease: false
+
+      - name: Version summary
+        run: |
+          echo "📋 SEMANTIC VERSION SUMMARY"
+          echo "=========================="
+          echo "🏷️ Generated Version: ${{ steps.version.outputs.version }}"
+          echo "📈 Bump Type: ${{ steps.analyze.outputs.bump_type }}"
+          echo "🌿 Branch: ${{ steps.version.outputs.branch }}"
+          echo "🚀 Is Release: ${{ steps.version.outputs.is_release }}"
+          echo "📅 Date: $(date)"
+          echo ""
+          echo "🎯 Next Steps:"
+          if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
+            echo "  ✅ Git tag created and pushed"
+            echo "  ✅ GitHub Release created"
+            echo "  ➡️ Ready for deployment"
+          else
+            echo "  📝 Pre-release version (no tag created)"
+            echo "  🔄 Continue development"
+          fi
   # Déploiement (simulation)
   deploy:
     name: Deploy to ${{ matrix.environment }}
