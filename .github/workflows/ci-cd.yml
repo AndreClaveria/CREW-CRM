@@ -56,7 +56,12 @@ jobs:
             echo "✅ Frontend build successful"
           else
             echo "🧪 Running backend tests..."
-            timeout 300 npm run test || npm test || echo "⚠️ No tests found for ${{ matrix.service }}"
+            # Add specific handling for metrics-service
+            if [ "${{ matrix.service }}" = "metrics-service" ]; then
+              timeout 300 npm run test -- --forceExit --detectOpenHandles || npm test -- --forceExit --detectOpenHandles || echo "⚠️ No tests found for ${{ matrix.service }}"
+            else
+              timeout 300 npm run test || npm test || echo "⚠️ No tests found for ${{ matrix.service }}"
+            fi
           fi
 
       - name: Test result
