@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [develop, prod]
 
+permissions:
+  contents: write # Pour pousser les tags
+  packages: write # Pour Docker (si besoin)
+  pull-requests: read # Pour lire les PR
+  issues: read # Pour lire les issues
+  actions: read # Pour lire les actions
+
 jobs:
   # Test basique de chaque service
   test-services:
