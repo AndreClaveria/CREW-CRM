@@ -81,16 +81,11 @@ jobs:
       - name: Test result
         run: echo "✅ ${{ matrix.service }} tests completed"
 
-  # Analyse de sécurité avec CodeQL
-  codeql-security-scan:
-    name: Security Analysis (CodeQL)
+  # Analyse de sécurité avec outils gratuits (remplace CodeQL)
+  security-scan:
+    name: Security Analysis (Free Tools)
     runs-on: ubuntu-latest
     needs: test-services
-
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
 
     strategy:
       fail-fast: false
@@ -108,44 +103,186 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Initialize CodeQL for ${{ matrix.service }}
-        uses: github/codeql-action/init@v3
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
         with:
-          languages: javascript
-          queries: security-extended
-          source-root: ./${{ matrix.service }}
+          node-version: "20"
 
-      - name: Build service for analysis
+      - name: Install dependencies
         working-directory: ./${{ matrix.service }}
         run: |
-          if [ -f package.json ]; then
-            echo "📦 Installing dependencies for ${{ matrix.service }}"
-            npm ci || npm install
-            
-            # Build si c'est le front
-            if [ "${{ matrix.service }}" = "front" ]; then
-              echo "🏗️ Building frontend for analysis..."
-              npm run build || echo "⚠️ Build failed, continuing with source analysis"
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      # 1. NPM Audit - Check for known vulnerabilities in dependencies
+      - name: NPM Security Audit
+        working-directory: ./${{ matrix.service }}
+        run: |
+          echo "🔍 Running npm audit for ${{ matrix.service }}..."
+          npm audit --audit-level=moderate || echo "⚠️ Vulnerabilities found in ${{ matrix.service }}"
+
+          # Generate detailed report
+          npm audit --json > npm-audit-${{ matrix.service }}.json || true
+
+          echo "📊 NPM Audit completed for ${{ matrix.service }}"
+
+      # 2. ESLint Security Plugin - Static code analysis for security
+      - name: ESLint Security Analysis
+        working-directory: ./${{ matrix.service }}
+        run: |
+          echo "🔐 Installing ESLint security plugins..."
+          npm install --no-save eslint@latest eslint-plugin-security@latest || true
+
+          # Create basic ESLint config with security rules
+          cat > .eslintrc.security.js << 'EOF'
+          module.exports = {
+            plugins: ['security'],
+            extends: ['plugin:security/recommended'],
+            rules: {
+              'security/detect-object-injection': 'error',
+              'security/detect-non-literal-regexp': 'error',
+              'security/detect-unsafe-regex': 'error',
+              'security/detect-buffer-noassert': 'error',
+              'security/detect-child-process': 'error',
+              'security/detect-disable-mustache-escape': 'error',
+              'security/detect-eval-with-expression': 'error',
+              'security/detect-no-csrf-before-method-override': 'error',
+              'security/detect-non-literal-fs-filename': 'warn',
+              'security/detect-non-literal-require': 'warn',
+              'security/detect-possible-timing-attacks': 'warn',
+              'security/detect-pseudoRandomBytes': 'error'
+            }
+          };
+          EOF
+
+          echo "🔍 Running ESLint security analysis..."
+          npx eslint . --config .eslintrc.security.js --ext .js,.ts,.jsx,.tsx --format json --output-file eslint-security-${{ matrix.service }}.json || echo "Security issues found"
+
+          # Show summary
+          npx eslint . --config .eslintrc.security.js --ext .js,.ts,.jsx,.tsx || echo "⚠️ Security issues detected in ${{ matrix.service }}"
+
+      # 3. Semgrep - Free SAST tool
+      - name: Semgrep Security Scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+            p/javascript
+          generateSarif: "1"
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        continue-on-error: true
+
+      # 4. Secret Detection with TruffleHog
+      - name: Secret Detection
+        run: |
+          echo "🔍 Scanning for secrets and credentials..."
+
+          # Install truffleHog
+          curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /tmp
+
+          # Scan for secrets
+          echo "🔐 Running TruffleHog secret detection..."
+          /tmp/trufflehog git file://${{ github.workspace }}/${{ matrix.service }} --only-verified=false --json > secrets-${{ matrix.service }}.json || echo "Potential secrets found"
+
+          # Show results
+          if [ -s secrets-${{ matrix.service }}.json ]; then
+            echo "⚠️ Potential secrets detected in ${{ matrix.service }}"
+            cat secrets-${{ matrix.service }}.json
+          else
+            echo "✅ No secrets detected in ${{ matrix.service }}"
+          fi
+
+      # 5. Custom Security Patterns Check
+      - name: Custom Security Pattern Check
+        working-directory: ./${{ matrix.service }}
+        run: |
+          echo "🔍 Running custom security pattern checks..."
+
+          # Check for hardcoded credentials patterns
+          echo "Checking for hardcoded credentials..."
+          if grep -r -i -E "(password|passwd|pwd)\s*=\s*['\"][^'\"]{1,}" . --exclude-dir=node_modules; then
+            echo "⚠️ Potential hardcoded passwords found"
+          fi
+
+          # Check for API keys
+          echo "Checking for API keys..."
+          if grep -r -E "['\"]?[A-Za-z0-9_]{20,}['\"]?" . --exclude-dir=node_modules | grep -i -E "(api_key|apikey|secret|token)"; then
+            echo "⚠️ Potential API keys found"
+          fi
+
+          # Check for SQL injection patterns
+          echo "Checking for SQL injection risks..."
+          if grep -r -E "query.*\+|SELECT.*\+|INSERT.*\+" . --exclude-dir=node_modules --include="*.js" --include="*.ts"; then
+            echo "⚠️ Potential SQL injection patterns found"
+          fi
+
+          # Check for eval() usage
+          echo "Checking for dangerous eval() usage..."
+          if grep -r "eval\s*(" . --exclude-dir=node_modules --include="*.js" --include="*.ts"; then
+            echo "⚠️ Dangerous eval() usage found"
+          fi
+
+          # Check for console.log in production code
+          if [ "${{ matrix.service }}" != "front" ]; then
+            echo "Checking for console.log in production code..."
+            if grep -r "console\.log" . --exclude-dir=node_modules --include="*.js" --include="*.ts"; then
+              echo "⚠️ console.log statements found (information disclosure risk)"
             fi
           fi
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/service:${{ matrix.service }}"
+          echo "✅ Custom security checks completed for ${{ matrix.service }}"
+
+      # 6. Bundle Analysis for Frontend
+      - name: Bundle Analysis (Frontend Only)
+        if: matrix.service == 'front'
+        working-directory: ./${{ matrix.service }}
+        run: |
+          echo "📦 Analyzing frontend bundle for security issues..."
+
+          # Check for large dependencies that might contain vulnerabilities
+          echo "🔍 Checking for oversized dependencies..."
+          npm ls --depth=0 --json > package-tree.json || true
+
+          # Check for known vulnerable packages
+          echo "🛡️ Checking for known vulnerable frontend packages..."
+          npm audit --audit-level=high || echo "Vulnerabilities found in frontend dependencies"
 
       - name: Security summary for ${{ matrix.service }}
         run: |
           echo "🔐 Security analysis completed for ${{ matrix.service }}"
-          echo "   - Static analysis: ✅"
-          echo "   - Vulnerability detection: ✅"
-          echo "   - Data flow analysis: ✅"
+          echo "✅ Tools used:"
+          echo "   - NPM Audit (dependency vulnerabilities)"
+          echo "   - ESLint Security Plugin (code patterns)"
+          echo "   - Semgrep (SAST analysis)"
+          echo "   - TruffleHog (secret detection)"
+          echo "   - Custom pattern matching"
+          if [ "${{ matrix.service }}" = "front" ]; then
+            echo "   - Frontend bundle analysis"
+          fi
+
+      # Upload artifacts for review
+      - name: Upload Security Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: security-reports-${{ matrix.service }}
+          path: |
+            npm-audit-${{ matrix.service }}.json
+            eslint-security-${{ matrix.service }}.json
+            secrets-${{ matrix.service }}.json
+          retention-days: 30
 
   # Build des images Docker
   build-test:
     name: Build Docker Images
     runs-on: ubuntu-latest
-    needs: [test-services, codeql-security-scan]
+    needs: [test-services, security-scan]
     if: github.event_name == 'push'
 
     strategy:
@@ -551,7 +688,7 @@ jobs:
     needs:
       [
         test-services,
-        codeql-security-scan,
+        security-scan,
         build-test,
         integration-test,
         performance-test,
@@ -573,7 +710,7 @@ jobs:
           echo ""
           echo "📊 Pipeline Results:"
           echo "  🧪 Service Tests: ${{ needs.test-services.result }}"
-          echo "  🔐 Security Scan: ${{ needs.codeql-security-scan.result }}"
+          echo "  🔐 Security Scan: ${{ needs.security-scan.result }}"
           echo "  🐳 Docker Builds: ${{ needs.build-test.result }}"
           echo "  🔗 Integration: ${{ needs.integration-test.result }}"
           echo "  ⚡ Performance: ${{ needs.performance-test.result || 'skipped' }}"
@@ -589,7 +726,7 @@ jobs:
           echo "  - payment-service (port 3006)"
           echo "  - front (Next.js, port 3000)"
           echo ""
-          echo "🛡️ Security: CodeQL analysis + Container scanning"
+          echo "🛡️ Security: Free tools (NPM Audit + ESLint + Semgrep + TruffleHog + Custom Patterns)"
           echo "🔗 Infrastructure: MongoDB + Redis + Docker Network"
 
       - name: Discord - Detailed Final Report
@@ -608,7 +745,7 @@ jobs:
 
             **📊 Résultats détaillés:**
             🧪 Tests Services: ${{ needs.test-services.result == 'success' && '✅' || '❌' }}
-            🔐 Analyse Sécurité: ${{ needs.codeql-security-scan.result == 'success' && '✅' || '❌' }}
+            🔐 Analyse Sécurité: ${{ needs.security-scan.result == 'success' && '✅' || '❌' }}
             🐳 Build Docker: ${{ needs.build-test.result == 'success' && '✅' || '❌' }}
             🔗 Tests Intégration: ${{ needs.integration-test.result == 'success' && '✅' || '❌' }}
             ⚡ Tests Performance: ${{ needs.performance-test.result == 'success' && '✅' || needs.performance-test.result == 'skipped' && '⏭️' || '❌' }}
@@ -624,7 +761,7 @@ jobs:
             💳 Payment (3006) ✅
             🌐 Frontend (3000) ✅
 
-            **🛡️ Sécurité:** OWASP + CodeQL + Container Scan
+            **🛡️ Sécurité:** NPM Audit + ESLint + Semgrep + TruffleHog + Custom Patterns
             **🔗 Infra:** MongoDB + Redis + Docker Network
 
       - name: Critical Alert Discord
