@@ -1,0 +1,143 @@
+services:
+  # Base de données MongoDB pour tests
+  mongo-test:
+    image: mongo:latest
+    container_name: crew-crm-mongo-test
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=crew-crm-test
+    tmpfs:
+      - /data/db
+    networks:
+      - crew-crm-test-network
+
+  # Redis pour tests
+  redis-test:
+    image: redis:latest
+    container_name: crew-crm-redis-test
+    ports:
+      - "6380:6379"
+    command: redis-server --requirepass crew-crm-redis-password
+    tmpfs:
+      - /data
+    networks:
+      - crew-crm-test-network
+
+  # Service BDD (tests)
+  bdd-service-test:
+    build: ./bdd-service
+    container_name: crew-crm-bdd-test
+    environment:
+      - NODE_ENV=test
+      - PORT=3001
+      - MONGO_URI=mongodb://mongo-test:27017/bdd-services-test
+      - JWT_SECRET=test-secret-key
+      - JWT_EXPIRES_IN=1h
+      - REDIS_URL=redis://:crew-crm-redis-password@redis-test:6379
+      - LOG_LEVEL=error
+    depends_on:
+      - mongo-test
+      - redis-test
+    networks:
+      - crew-crm-test-network
+    command: npm test
+
+  # Service d'authentification (tests)
+  authentication-service-test:
+    build: ./authentication-service
+    container_name: crew-crm-auth-test
+    environment:
+      - NODE_ENV=test
+      - PORT=3002
+      - MONGO_URI=mongodb://mongo-test:27017/authentication-service-test
+      - JWT_SECRET=test-secret-key
+      - JWT_EXPIRES_IN=1h
+      - REDIS_URL=redis://:crew-crm-redis-password@redis-test:6379
+      - LOG_LEVEL=error
+    depends_on:
+      - mongo-test
+      - redis-test
+    networks:
+      - crew-crm-test-network
+    command: npm test
+
+  # Service de notifications (tests)
+  notification-service-test:
+    build: ./notification-mail-sms-service
+    container_name: crew-crm-notifications-test
+    environment:
+      - NODE_ENV=test
+      - PORT=3003
+      - MONGO_URI=mongodb://mongo-test:27017/notification-service-test
+      - JWT_SECRET=test-secret-key
+      - LOG_LEVEL=error
+    depends_on:
+      - mongo-test
+    networks:
+      - crew-crm-test-network
+    command: npm test
+
+  # Service de métriques (tests)
+  metrics-service-test:
+    build: ./metrics-service
+    container_name: crew-crm-metrics-test
+    environment:
+      - NODE_ENV=test
+      - PORT=3004
+      - MONGO_URI=mongodb://mongo-test:27017/metrics-service-test
+      - JWT_SECRET=test-secret-key
+      - LOG_LEVEL=error
+    depends_on:
+      - mongo-test
+    networks:
+      - crew-crm-test-network
+    command: npm test
+
+  # Service IA (tests)
+  service-ia-test:
+    build: ./service-ia
+    container_name: crew-crm-ia-test
+    environment:
+      - NODE_ENV=test
+      - PORT=3005
+      - MONGO_URI=mongodb://mongo-test:27017/ia-services-test
+      - JWT_SECRET=test-secret-key
+      - LOG_LEVEL=error
+    depends_on:
+      - mongo-test
+    networks:
+      - crew-crm-test-network
+    command: npm test
+
+  # Service de paiement (tests)
+  payment-service-test:
+    build: ./payment-service
+    container_name: crew-crm-payment-test
+    environment:
+      - NODE_ENV=test
+      - PORT=3006
+      - MONGO_URI=mongodb://mongo-test:27017/payment-services-test
+      - JWT_SECRET=test-secret-key
+      - LOG_LEVEL=error
+    depends_on:
+      - mongo-test
+    networks:
+      - crew-crm-test-network
+    command: npm test
+
+  # Frontend (build test)
+  frontend-test:
+    build: ./front
+    container_name: crew-crm-frontend-test
+    environment:
+      - NODE_ENV=test
+      - NEXT_PUBLIC_API_URL=http://authentication-service-test:3002/api/
+      - NEXT_PUBLIC_API_URL_BDD=http://bdd-service-test:3001/api/
+    networks:
+      - crew-crm-test-network
+    command: npm run build
+
+networks:
+  crew-crm-test-network:
+    driver: bridge
