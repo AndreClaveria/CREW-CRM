@@ -1,31 +1,29 @@
 import { Application } from "express";
-import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import config from "./index";
+import YAML from "yamljs";
+import path from "path";
+import fs from "fs";
 
-const swaggerDefinition = {
-  openapi: "3.0.0",
-  info: {
-    title: "API de Service de Paiement",
-    version: "1.0.0",
-    description: "Documentation de l'API du service de paiement"
-  },
-  servers: [
-    {
-      url: `http://localhost:${config.server.port}`,
-      description: "Serveur de développement"
-    }
-  ]
-};
+/**
+ * Configure Swagger pour l'application Express
+ * @param app Application Express
+ */
+export function setupSwagger(app: Application): void {
+  try {
+    // Charger le fichier YAML
+    const swaggerDocument = YAML.load(path.join(__dirname, "../swagger.yaml"));
 
-const options = {
-  swaggerDefinition,
-  apis: ["./src/routes/*.ts"]
-};
+    // Ajouter les routes Swagger
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-const swaggerSpec = swaggerJSDoc(options);
+    // Endpoint pour récupérer la spécification Swagger en JSON
+    app.get("/swagger.json", (req, res) => {
+      res.setHeader("Content-Type", "application/json");
+      res.send(swaggerDocument);
+    });
 
-export const setupSwagger = (app: Application) => {
-  // Route pour la documentation Swagger
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-};
+    console.log("Documentation Swagger configurée avec succès");
+  } catch (error) {
+    console.error("Erreur lors de la configuration de Swagger:", error);
+  }
+}

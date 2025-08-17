@@ -1,0 +1,426 @@
+openapi: 3.0.0
+info:
+  title: Payment Microservice API
+  version: 1.0.0
+  description: Documentation de l'API du microservice de paiement pour le CRM CREW
+  contact:
+    name: Support
+    email: csupport@crewcrm.fr
+
+servers:
+  - url: http://localhost:3001
+    description: Serveur de développement
+  - url: https://api.crew.fr/payment
+    description: Serveur de production
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CreatePaymentSessionInput:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: number
+          minimum: 1
+          description: Montant du paiement en centimes (ex: 2000 pour 20.00€)
+        currency:
+          type: string
+          default: "eur"
+          enum: [eur, usd]
+          description: Devise du paiement
+      example:
+        amount: 2000
+        currency: "eur"
+
+    PaymentSessionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: ID de la session Stripe
+            url:
+              type: string
+              description: URL de redirection vers Stripe Checkout
+            payment_status:
+              type: string
+              description: Statut du paiement
+      example:
+        success: true
+        data:
+          id: "cs_test_1234567890abcdef"
+          url: "https://checkout.stripe.com/pay/cs_test_1234567890abcdef"
+          payment_status: "unpaid"
+
+    CreatePaymentIntentInput:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: number
+          minimum: 1
+          description: Montant du paiement en centimes
+        currency:
+          type: string
+          default: "eur"
+          enum: [eur, usd]
+          description: Devise du paiement
+        planId:
+          type: string
+          description: ID du plan associé (optionnel)
+      example:
+        amount: 2000
+        currency: "eur"
+        planId: "plan_basic_monthly"
+
+    PaymentIntentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: ID du PaymentIntent
+            client_secret:
+              type: string
+              description: Client secret pour Stripe Elements
+            status:
+              type: string
+              description: Statut du PaymentIntent
+      example:
+        success: true
+        data:
+          id: "pi_1234567890abcdef"
+          client_secret: "pi_1234567890abcdef_secret_1234567890"
+          status: "requires_payment_method"
+
+    CreateRefundInput:
+      type: object
+      required:
+        - paymentIntentId
+      properties:
+        paymentIntentId:
+          type: string
+          description: ID du PaymentIntent à rembourser
+        amount:
+          type: number
+          description: Montant à rembourser en centimes (remboursement partiel si spécifié)
+      example:
+        paymentIntentId: "pi_1234567890abcdef"
+        amount: 1000
+
+    RefundResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: ID du remboursement
+            amount:
+              type: number
+              description: Montant remboursé en centimes
+            status:
+              type: string
+              description: Statut du remboursement
+            payment_intent:
+              type: string
+              description: ID du PaymentIntent original
+      example:
+        success: true
+        data:
+          id: "re_1234567890abcdef"
+          amount: 2000
+          status: "succeeded"
+          payment_intent: "pi_1234567890abcdef"
+
+    PaymentStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: ID de la session
+            payment_status:
+              type: string
+              description: Statut du paiement
+            amount_total:
+              type: number
+              description: Montant total en centimes
+            currency:
+              type: string
+              description: Devise utilisée
+      example:
+        success: true
+        data:
+          id: "cs_test_1234567890abcdef"
+          payment_status: "paid"
+          amount_total: 2000
+          currency: "eur"
+
+    CustomerPaymentsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              amount:
+                type: number
+              currency:
+                type: string
+              status:
+                type: string
+              created:
+                type: number
+      example:
+        success: true
+        data: []
+
+    WebhookResponse:
+      type: object
+      properties:
+        received:
+          type: boolean
+      example:
+        received: true
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      example:
+        success: true
+        message: "Opération réussie"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: string
+          description: Détails de l'erreur (optionnel)
+      example:
+        success: false
+        message: "Une erreur est survenue"
+        error: "Détails de l'erreur"
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/payments/create-session:
+    post:
+      summary: Crée une session de paiement Stripe Checkout
+      tags:
+        - Paiements
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePaymentSessionInput"
+      responses:
+        "200":
+          description: Session de paiement créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentSessionResponse"
+        "400":
+          description: Données d'entrée invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/payments/create-intent:
+    post:
+      summary: Crée un PaymentIntent pour Stripe Elements
+      tags:
+        - Paiements
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePaymentIntentInput"
+      responses:
+        "200":
+          description: PaymentIntent créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntentResponse"
+        "400":
+          description: Données d'entrée invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/payments/status/{sessionId}:
+    get:
+      summary: Vérifie le statut d'une session de paiement
+      tags:
+        - Paiements
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la session Stripe
+          example: "cs_test_1234567890abcdef"
+      responses:
+        "200":
+          description: Statut de la session récupéré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentStatusResponse"
+        "400":
+          description: ID de session manquant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/payments/refund:
+    post:
+      summary: Crée un remboursement
+      tags:
+        - Paiements
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRefundInput"
+      responses:
+        "200":
+          description: Remboursement créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefundResponse"
+        "400":
+          description: Données d'entrée invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/payments/webhook:
+    post:
+      summary: Gère les webhooks Stripe
+      tags:
+        - Webhooks
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Payload du webhook Stripe
+      responses:
+        "200":
+          description: Webhook traité avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookResponse"
+
+  /api/payments/customer/{customerId}:
+    get:
+      summary: Récupère les paiements d'un client
+      tags:
+        - Paiements
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID du client
+      responses:
+        "200":
+          description: Paiements du client récupérés avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerPaymentsResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
