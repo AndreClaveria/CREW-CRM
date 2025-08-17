@@ -358,14 +358,14 @@ jobs:
       - name: Start services with Docker Compose
         run: |
           echo "🚀 Starting CREW-CRM services..."
-          docker-compose --env-file .env.test up -d mongo redis
+          docker compose --env-file .env.test up -d mongo redis
 
           # Attendre que les bases soient prêtes
           echo "⏳ Waiting for databases to be ready..."
           sleep 30
 
           # Démarrer les services backend
-          docker-compose --env-file .env.test up -d \
+          docker compose --env-file .env.test up -d \
             bdd-service \
             authentication-service \
             notification-mail-sms-service \
@@ -410,7 +410,7 @@ jobs:
             
             if [ $attempt -gt $max_attempts ]; then
               echo "❌ $name failed health check"
-              docker-compose logs $name
+              docker compose logs $name
               exit 1
             fi
           done
@@ -465,7 +465,7 @@ jobs:
         if: always()
         run: |
           echo "🧹 Cleaning up test environment..."
-          docker-compose down -v
+          docker compose down -v
           docker system prune -f
 
   # Test de performance (seulement sur develop)
@@ -493,7 +493,7 @@ jobs:
           JWT_SECRET=perf-jwt-secret-key
           EOF
 
-          docker-compose --env-file .env.perf up -d
+          docker compose --env-file .env.perf up -d
           sleep 120
 
       - name: Create performance test scenarios
@@ -542,7 +542,7 @@ jobs:
 
       - name: Cleanup
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v
 
   # Tests End-to-End (seulement sur les PR vers prod)
   e2e-tests:
@@ -558,7 +558,7 @@ jobs:
       - name: Setup test environment
         run: |
           echo "🧪 Setting up E2E test environment..."
-          docker-compose up -d
+          docker compose up -d
           sleep 90
 
       - name: Run basic E2E tests
@@ -580,7 +580,7 @@ jobs:
 
       - name: Cleanup
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v
 
   # Génération de version
   version:
