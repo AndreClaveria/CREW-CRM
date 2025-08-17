@@ -68,12 +68,7 @@ jobs:
         working-directory: ./${{ matrix.service }}
         run: |
           if [ "${{ matrix.service }}" != "front" ]; then
-            # Utiliser les mêmes flags que pour les tests normaux
-            if [ "${{ matrix.service }}" = "metrics-service" ]; then
-              timeout 300 npm run test:coverage -- --forceExit --detectOpenHandles || npm run test:coverage -- --forceExit --detectOpenHandles || echo "⚠️ No coverage script for ${{ matrix.service }}"
-            else
-              timeout 300 npm run test:coverage -- --forceExit --detectOpenHandles || npm run test:coverage || echo "⚠️ No coverage script for ${{ matrix.service }}"
-            fi
+            npm run test:coverage || echo "⚠️ No coverage script for ${{ matrix.service }}"
           fi
 
       - name: Upload Coverage to Codecov
@@ -85,50 +80,6 @@ jobs:
 
       - name: Test result
         run: echo "✅ ${{ matrix.service }} tests completed"
-
-  # Quality Gate - Vérification des seuils de qualité
-  quality-gate:
-    name: Quality Gate
-    runs-on: ubuntu-latest
-    needs: [test-services, quality-gate]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download coverage reports
-        run: |
-          echo "📊 Analyzing code quality metrics..."
-
-      - name: Coverage threshold check
-        run: |
-          echo "🎯 Checking coverage thresholds..."
-
-          # Définir les seuils minimum
-          MIN_COVERAGE=70
-          CURRENT_COVERAGE=44  # Mettre à jour selon vos rapports
-
-          if [ $CURRENT_COVERAGE -lt $MIN_COVERAGE ]; then
-            echo "❌ Coverage too low: ${CURRENT_COVERAGE}% (minimum: ${MIN_COVERAGE}%)"
-            echo "💡 Add more tests to improve coverage"
-            echo "⚠️ Warning: Coverage below threshold (not blocking for now)"
-            # exit 1  # Décommentez pour bloquer si coverage trop basse
-          else
-            echo "✅ Coverage acceptable: ${CURRENT_COVERAGE}%"
-          fi
-
-      - name: Quality summary
-        run: |
-          echo "📋 Quality Gate Summary:"
-          echo "  📊 Code Coverage: 44% (Target: 70%)"
-          echo "  🎯 Controllers: 94% ✅"
-          echo "  🔧 Services: 8% ⚠️ (Needs improvement)"
-          echo "  🛠️ Utils: 100% ✅"
-          echo ""
-          echo "🚀 Next steps to improve:"
-          echo "  1. Add unit tests for services/"
-          echo "  2. Test error handling scenarios"
-          echo "  3. Add integration tests"
 
   # Analyse de sécurité avec CodeQL
   codeql-security-scan:
@@ -663,12 +614,6 @@ jobs:
             ⚡ Tests Performance: ${{ needs.performance-test.result == 'success' && '✅' || needs.performance-test.result == 'skipped' && '⏭️' || '❌' }}
             🎯 Tests E2E: ${{ needs.e2e-tests.result == 'success' && '✅' || needs.e2e-tests.result == 'skipped' && '⏭️' || '❌' }}
             🚀 Déploiement: ${{ needs.deploy.result == 'success' && '✅' || needs.deploy.result == 'skipped' && '⏭️' || '❌' }}
-
-            **📊 Qualité du code:**
-            📈 Coverage Global: 44% (Target: 70%)
-            🎯 Controllers: 94% ✅
-            🔧 Services: 8% ⚠️ 
-            🛠️ Utils: 100% ✅
 
             **🏗️ Services validés:**
             🔐 Authentication (3002) ✅
