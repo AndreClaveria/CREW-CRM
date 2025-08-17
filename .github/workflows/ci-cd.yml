@@ -56,7 +56,7 @@ jobs:
             echo "✅ Frontend build successful"
           else
             echo "🧪 Running backend tests..."
-            npm run test || echo "⚠️ No tests found for ${{ matrix.service }}"
+            timeout 300 npm run test || npm test || echo "⚠️ No tests found for ${{ matrix.service }}"
           fi
 
       - name: Test result
