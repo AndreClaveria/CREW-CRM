@@ -1,7 +1,7 @@
 // services/company.service.ts
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL_BDD || "http://localhost:3002/api";
+  process.env.NEXT_PUBLIC_API_URL_BDD || "http://localhost:3002/api/";
 
 export interface Company {
   _id: string;

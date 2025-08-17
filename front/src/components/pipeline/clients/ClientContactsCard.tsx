@@ -13,7 +13,7 @@ interface ClientContactsCardProps {
   contacts: any[];
   navigateToContact: (contactId: string) => void;
   navigateToContactsManagement: () => void;
-  navigateToMailPage: (contactEmail?: string) => void; // Nouveau prop pour la navigation vers la page d'e-mail
+  navigateToMailPage: (contactEmail?: string) => void; // Nouveau prop pour la navigation vers la page d’e-mail
 }
 
 const ClientContactsCard: React.FC<ClientContactsCardProps> = ({
@@ -99,7 +99,7 @@ const ClientContactsCard: React.FC<ClientContactsCardProps> = ({
         <div style={styles.noDataCard}>
           <FaExclamationTriangle style={styles.noDataIcon} />
           <div style={styles.noDataText}>
-            Aucun contact n'a été ajouté pour ce client.
+            Aucun contact n’a été ajouté pour ce client.
           </div>
           <ActionButton
             onClick={navigateToContactsManagement}

@@ -20,9 +20,7 @@ import {
   FaBuilding,
 } from "react-icons/fa";
 
-interface EmailViewPageProps {}
-
-const EmailViewPage: React.FC<EmailViewPageProps> = () => {
+const EmailViewPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const { user, isLoading: isLoadingAuth } = useAuth();
@@ -57,7 +55,7 @@ const EmailViewPage: React.FC<EmailViewPageProps> = () => {
   // Load email initially
   useEffect(() => {
     if (emailId && hasAccess && !emailLoaded) {
-      console.log("📧 Chargement initial de l'email:", emailId);
+      console.log("📧 Chargement initial de l&apos;email:", emailId);
       loadEmail(emailId);
       setEmailLoaded(true);
     }
@@ -97,7 +95,7 @@ const EmailViewPage: React.FC<EmailViewPageProps> = () => {
               margin: "0 auto 16px",
             }}
           ></div>
-          <p>Chargement de l'email...</p>
+          <p>Chargement de l&apos;email...</p>
         </div>
       </div>
     );
@@ -148,11 +146,11 @@ const EmailViewPage: React.FC<EmailViewPageProps> = () => {
       if (success) {
         router.push("/mail");
       } else {
-        alert("Erreur lors de la suppression de l'email");
+        alert("Erreur lors de la suppression de l&apos;email");
       }
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
-      alert("Erreur lors de la suppression de l'email");
+      alert("Erreur lors de la suppression de l&apos;email");
     } finally {
       setIsDeleting(false);
     }
@@ -265,7 +263,7 @@ const EmailViewPage: React.FC<EmailViewPageProps> = () => {
               fontFamily: "var(--font-first)",
             }}
           >
-            Détail de l'email
+            Détail de l&apos;email
           </h1>
         </div>
 
@@ -311,7 +309,7 @@ const EmailViewPage: React.FC<EmailViewPageProps> = () => {
         </div>
       </div>
 
-      {/* Informations de l'email */}
+      {/* Informations de l&apos;email */}
       <div
         style={{
           backgroundColor: "#f8f9fa",
@@ -396,7 +394,7 @@ const EmailViewPage: React.FC<EmailViewPageProps> = () => {
                 }}
               >
                 <FaCalendarAlt style={{ color: "#666" }} />
-                <strong>Date d'envoi :</strong>
+                <strong>Date d&apos;envoi :</strong>
               </div>
               <p style={{ margin: 0, paddingLeft: "24px" }}>
                 {formatDate(email?.sentAt || email?.createdAt)}
@@ -446,7 +444,7 @@ const EmailViewPage: React.FC<EmailViewPageProps> = () => {
         </div>
       </div>
 
-      {/* Corps de l'email */}
+      {/* Corps de l&apos;email */}
       <div
         style={{
           backgroundColor: "white",

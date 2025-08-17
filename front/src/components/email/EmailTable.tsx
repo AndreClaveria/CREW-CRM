@@ -11,11 +11,11 @@ import { tableStyleProps } from "@/styles/components/tableStyles";
 import { useAuth } from "@/contexts/AuthContext";
 import { FaTrashAlt, FaReply, FaForward, FaEye } from "react-icons/fa";
 
-// ✅ INTERFACE MISE À JOUR SELON VOTRE STRUCTURE API
-interface EmailFromAPI extends Email {
+// ✅ INTERFACE MISE À JOUR - Hérite de Email et redéfinit trackingId comme optionnel
+interface EmailFromAPI extends Omit<Email, "trackingId"> {
+  trackingId?: string;
   toEmail?: string;
   emailProvider?: string;
-  trackingId?: string;
   isReply?: boolean;
   hasReply?: boolean;
   replyCount?: number;
@@ -26,6 +26,7 @@ interface EmailFromAPI extends Email {
     email?: string;
   };
 }
+
 interface Contact {
   _id: string;
   firstName?: string;
@@ -78,7 +79,7 @@ const EmailTable: React.FC<EmailTableProps> = ({
   >(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [emailToDelete, setEmailToDelete] = useState<Email | null>(null);
+  const [emailToDelete, setEmailToDelete] = useState<EmailFromAPI | null>(null); // ✅ Type mis à jour
   const [error, setError] = useState<string | null>(null);
 
   // ✅ MÉMORISER LES FILTRES POUR ÉVITER LES RECRÉATIONS D'OBJETS
@@ -109,9 +110,13 @@ const EmailTable: React.FC<EmailTableProps> = ({
         // ✅ GÉRER LA STRUCTURE SPÉCIFIQUE DE VOTRE API
         let emailsData = [];
 
-        if (response.data.emails && Array.isArray(response.data.emails)) {
+        // ✅ Traitement sécurisé des données avec vérification de type
+        if (
+          (response.data as any).emails &&
+          Array.isArray((response.data as any).emails)
+        ) {
           // Cas principal: data contient un champ emails qui est un tableau
-          emailsData = response.data.emails;
+          emailsData = (response.data as any).emails;
           console.log("✅ Emails extraits de data.emails:", emailsData.length);
         } else if (Array.isArray(response.data)) {
           // Cas 2: data est directement un tableau
@@ -162,7 +167,8 @@ const EmailTable: React.FC<EmailTableProps> = ({
     }
   }, [userId, fetchEmails]); // ✅ DÉPENDANCES CORRECTES
 
-  const handleDeleteClick = (email: Email) => {
+  const handleDeleteClick = (email: EmailFromAPI) => {
+    // ✅ Type mis à jour
     setEmailToDelete(email);
     setShowDeleteModal(true);
   };
@@ -198,11 +204,13 @@ const EmailTable: React.FC<EmailTableProps> = ({
     setEmailToDelete(null);
   };
 
-  const handleReply = (email: Email) => {
+  const handleReply = (email: EmailFromAPI) => {
+    // ✅ Type mis à jour
     router.push(`/dashboard/pipeline/emails/reply/${userId}/${email._id}`);
   };
 
-  const handleForward = (email: Email) => {
+  const handleForward = (email: EmailFromAPI) => {
+    // ✅ Type mis à jour
     router.push(`/dashboard/pipeline/emails/forward/${userId}/${email._id}`);
   };
 
@@ -219,7 +227,8 @@ const EmailTable: React.FC<EmailTableProps> = ({
     });
   };
 
-  const getFromUserInfo = (email: Email) => {
+  const getFromUserInfo = (email: EmailFromAPI) => {
+    // ✅ Type mis à jour
     // ✅ UTILISER userInfo SI DISPONIBLE (comme dans votre API)
     if (email.userInfo) {
       if (email.userInfo.firstName && email.userInfo.lastName) {
@@ -228,8 +237,8 @@ const EmailTable: React.FC<EmailTableProps> = ({
       return email.userInfo.email || `User ${email.fromUserId}`;
     }
 
-    // Fallback sur le système de lookup existant
-    const fromUser = users[email.fromUserId];
+    // Fallback sur le système de lookup existant - Sécurisation de l'accès
+    const fromUser = email.fromUserId ? users[email.fromUserId] : undefined;
     if (fromUser) {
       if (fromUser.firstName && fromUser.lastName) {
         return `${fromUser.firstName} ${fromUser.lastName}`;
@@ -239,14 +248,15 @@ const EmailTable: React.FC<EmailTableProps> = ({
     return `User ${email.fromUserId}`;
   };
 
-  const getToContactInfo = (email: Email) => {
+  const getToContactInfo = (email: EmailFromAPI) => {
+    // ✅ Type mis à jour
     // ✅ UTILISER toEmail SI DISPONIBLE (comme dans votre API)
     if (email.toEmail) {
       return email.toEmail;
     }
 
-    // Fallback sur le système de lookup existant
-    const contact = contacts[email.toContactId];
+    // Fallback sur le système de lookup existant - Sécurisation de l'accès
+    const contact = email.toContactId ? contacts[email.toContactId] : undefined;
     if (contact) {
       if (contact.firstName && contact.lastName) {
         return `${contact.firstName} ${contact.lastName}`;
@@ -256,7 +266,8 @@ const EmailTable: React.FC<EmailTableProps> = ({
     return `Contact ${email.toContactId}`;
   };
 
-  const getEmailStatusBadge = (email: Email) => {
+  const getEmailStatusBadge = (email: EmailFromAPI) => {
+    // ✅ Type mis à jour
     switch (email.status) {
       case "sent":
         return <StatusBadge isActive={true} />;
@@ -426,7 +437,8 @@ const EmailTable: React.FC<EmailTableProps> = ({
   };
 
   // Handler pour la navigation vers la page de détail
-  const handleRowClick = (email: Email) => {
+  const handleRowClick = (email: EmailFromAPI) => {
+    // ✅ Type mis à jour
     router.push(`/dashboard/mail/${userId}/${email._id}`);
 
     // Marquer comme lu au clic si la fonction est disponible

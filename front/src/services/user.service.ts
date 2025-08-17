@@ -2,7 +2,7 @@
 
 import { getToken } from "./auth.service";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api/";
 
 export interface User {
   _id: string;

@@ -6,6 +6,7 @@ import {
   FaPhone,
   FaCalendarAlt,
   FaCheck,
+  FaUserShield,
 } from "react-icons/fa";
 
 interface UserProfileCardProps {
@@ -104,7 +105,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
           <div style={styles.detailsItem}>
             <div style={styles.detailsLabel}>
               <FaUserShield style={{ marginRight: "8px" }} />
-              Méthode d'authentification
+              Méthode d’authentification
             </div>
             <div style={styles.detailsValue}>{user.provider}</div>
           </div>

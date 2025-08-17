@@ -1,5 +1,3 @@
-import { table } from "console";
-
 // src/styles/pages/dashboard/admin/adminDashboardStyles.ts
 export const adminDashboardStyles = {
   container: {

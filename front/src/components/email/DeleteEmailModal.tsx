@@ -54,7 +54,7 @@ const DeleteEmailModal: React.FC<DeleteEmailModalProps> = ({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Icône d'avertissement */}
+        {/* Icône d&apos;avertissement */}
         <div
           style={{
             display: "flex",
@@ -94,8 +94,8 @@ const DeleteEmailModal: React.FC<DeleteEmailModalProps> = ({
           }}
         >
           {isPermanent
-            ? "Supprimer définitivement l'email"
-            : "Supprimer l'email"}
+            ? "Supprimer définitivement l&apos;email"
+            : "Supprimer l&apos;email"}
         </h3>
 
         {/* Message de confirmation */}
@@ -124,11 +124,12 @@ const DeleteEmailModal: React.FC<DeleteEmailModalProps> = ({
           {isPermanent ? (
             <p style={{ color: "#dc2626", fontSize: "14px" }}>
               <strong>Attention :</strong> Cette action est irréversible.
-              L'email sera définitivement supprimé.
+              L&apos;email sera définitivement supprimé.
             </p>
           ) : (
             <p style={{ fontSize: "14px" }}>
-              L'email sera déplacé dans la corbeille et pourra être restauré.
+              L&apos;email sera déplacé dans la corbeille et pourra être
+              restauré.
             </p>
           )}
         </div>

@@ -14,7 +14,7 @@ const config = {
     defaults: {
       from: {
         name: process.env.EMAIL_FROM_NAME || "",
-        address: process.env.EMAIL_FROM_ADDRESS || ""
+        address: process.env.EMAIL_FROM || ""
       }
     },
 

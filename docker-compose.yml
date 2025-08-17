@@ -1,16 +1,341 @@
 services:
+  # Base de données MongoDB
   mongo:
     image: mongo:latest
+    container_name: crew-crm-mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
     networks:
-      - crm-network
+      - crew-crm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Redis pour le cache et sessions
+  redis:
+    image: redis:latest
+    container_name: crew-crm-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - crew-crm-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass crew-crm-redis-password
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Service BDD (port 3001)
+  bdd-service:
+    build: ./bdd-service
+    container_name: crew-crm-bdd
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - HOST=localhost
+      - PORT=3001
+      - FRONTEND_URL=http://localhost:3000
+      - AUTH_URL=http://authentication-service:3002/api
+      - NOTIFICATION_URL=http://notification-mail-sms-service:3003/api/notification
+      - PROTOCOL=http
+      - MONGO_URI=mongodb://mongo:27017/bdd-services
+      - JWT_SECRET=your-secret-key
+      - JWT_EXPIRES_IN=6h
+      - LOG_LEVEL=info
+      - SERVICE_NAME=bdd-services
+      - REDIS_URL=redis://:crew-crm-redis-password@redis:6379
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=crew-crm-redis-password
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - crew-crm-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://localhost:3001/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+  # Service d'authentification (port 3002)
+  authentication-service:
+    build: ./authentication-service
+    container_name: crew-crm-auth
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - HOST=localhost
+      - PORT=3002
+      - FRONTEND_URL=http://localhost:3000
+      - NOTIFICATION_URL=http://notification-mail-sms-service:3003/api/notification
+      - PROTOCOL=http
+      - MONGO_URI=mongodb://mongo:27017/autenthication-service
+      - JWT_SECRET=your-secret-key
+      - JWT_EXPIRES_IN=6h
+      - LOG_LEVEL=info
+      - SERVICE_NAME=autenthication-service
+      - GOOGLE_CLIENT_ID=
+      - GOOGLE_CLIENT_SECRET=
+      - GOOGLE_CALLBACK_URL=http://localhost:3002/api/auth/google/callback
+      - REDIS_URL=redis://:crew-crm-redis-password@redis:6379
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=crew-crm-redis-password
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - crew-crm-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://localhost:3002/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+  # Service de notifications (port 3003)
+  notification-mail-sms-service:
+    build: ./notification-mail-sms-service
+    container_name: crew-crm-notifications
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - HOST=localhost
+      - PORT=3003
+      - JWT_SECRET=your-secret-key
+      - JWT_EXPIRES_IN=1d
+      - BREVO_API_KEY=
+      - SMTP_HOST=smtp-relay.brevo.com
+      - SMTP_PORT=587
+      - SMTP_USER=
+      - SMTP_PASSWORD=
+      - EMAIL_FROM=noreply@andreclaveria-crm.com
+      - EMAIL_FROM_NAME=CRM AndreClaveria
+      - FRONTEND_URL=http://localhost:3000
+      - AUTH_SERVICE_URL=http://authentication-service:3002
+      - DATABASE_SERVICE_URL=http://bdd-service:3001
+      - DISCORD_INFO_WEBHOOK=
+      - SERVICE_NAME=NOTIFICATIONS-SERVICE_NAME
+      - ENABLE_MONITORING=true
+      - MONITORING_INTERVAL_MINUTES=60
+      - MONGO_URI=mongodb://mongo:27017/notification-mail-sms-service
+    depends_on:
+      mongo:
+        condition: service_healthy
+      authentication-service:
+        condition: service_healthy
+      bdd-service:
+        condition: service_healthy
+    networks:
+      - crew-crm-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://localhost:3003/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+  # Service de métriques (port 3004)
+  metrics-service:
+    build: ./metrics-service
+    container_name: crew-crm-metrics
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=development
+      - HOST=localhost
+      - PORT=3004
+      - JWT_SECRET=your-secret-key
+      - JWT_EXPIRES_IN=1d
+      - EMAIL_FROM=noreply@clement.roc2002-crm.com
+      - EMAIL_FROM_NAME=CRM Clement7892
+      - FRONTEND_URL=http://localhost:3000
+      - AUTH_SERVICE_URL=http://authentication-service:3002
+      - DATABASE_SERVICE_URL=http://bdd-service:3001
+      - EMAIL_SERVICE_URL=http://notification-mail-sms-service:3003
+      - DISCORD_WEBHOOK_URL=
+      - SERVICE_NAME=METRICS
+      - ENABLE_MONITORING=true
+      - MONITORING_INTERVAL_MINUTES=60
+    depends_on:
+      mongo:
+        condition: service_healthy
+      authentication-service:
+        condition: service_healthy
+      bdd-service:
+        condition: service_healthy
+    networks:
+      - crew-crm-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://localhost:3004/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+  # Service IA (port 3005)
+  service-ia:
+    build: ./service-ia
+    container_name: crew-crm-ia
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=development
+      - HOST=localhost
+      - PORT=3005
+      - FRONTEND_URL=http://localhost:3000
+      - BDD_URL=http://bdd-service:3001/api
+      - AUTH_URL=http://authentication-service:3002/api
+      - NOTIFICATION_URL=http://notification-mail-sms-service:3003/api/notification
+      - PROTOCOL=http
+      - MONGO_URI=mongodb://mongo:27017/ia-services
+      - JWT_SECRET=your-secret-key
+      - JWT_EXPIRES_IN=6h
+      - LOG_LEVEL=info
+      - OPENAI_API_KEY=
+      - SERVICE_NAME=service-ia
+    depends_on:
+      mongo:
+        condition: service_healthy
+      authentication-service:
+        condition: service_healthy
+      bdd-service:
+        condition: service_healthy
+    networks:
+      - crew-crm-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://localhost:3005/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+  # Service de paiement (port 3006)
+  payment-service:
+    build: ./payment-service
+    container_name: crew-crm-payment
+    ports:
+      - "3006:3006"
+    environment:
+      - NODE_ENV=development
+      - HOST=localhost
+      - PORT=3006
+      - PROTOCOL=http
+      - STRIPE_SECRET_KEY=
+      - STRIPE_PUBLISHABLE_KEY=
+      - FRONTEND_URL=http://localhost:3000
+      - MONGO_URI=mongodb://mongo:27017/payment-services
+      - JWT_SECRET=your-secret-key
+      - JWT_EXPIRES_IN=6h
+      - LOG_LEVEL=info
+    depends_on:
+      mongo:
+        condition: service_healthy
+      authentication-service:
+        condition: service_healthy
+    networks:
+      - crew-crm-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://localhost:3006/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+  # Frontend NextJS (port 3000) - SE LANCE EN DERNIER
+  frontend:
+    build: ./front
+    container_name: crew-crm-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - NEXT_PUBLIC_API_URL=http://localhost:3002/api/
+      - NEXT_PUBLIC_API_URL_BDD=http://localhost:3001/api/
+      - NEXT_PUBLIC_API_URL_NOTIFICATION=http://localhost:3003/api/
+      - NEXT_PUBLIC_API_URL_METRICS=http://localhost:3004/api/
+      - NEXT_PUBLIC_API_URL_IA=http://localhost:3005/api/
+      - NEXT_PUBLIC_API_URL_PAYMENT=http://localhost:3006/api/
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      authentication-service:
+        condition: service_healthy
+      bdd-service:
+        condition: service_healthy
+      notification-mail-sms-service:
+        condition: service_healthy
+      metrics-service:
+        condition: service_healthy
+      service-ia:
+        condition: service_healthy
+      payment-service:
+        condition: service_healthy
+    networks:
+      - crew-crm-network
+    restart: unless-stopped
 
 networks:
-  crm-network:
+  crew-crm-network:
+    name: crew-crm-network
     driver: bridge
 
 volumes:
   mongo-data:
+    name: crew-crm-mongo-data
+  redis-data:
+    name: crew-crm-redis-data

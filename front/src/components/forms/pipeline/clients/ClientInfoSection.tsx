@@ -38,7 +38,7 @@ const ClientInfoSection: React.FC<ClientInfoSectionProps> = ({
       </div>
 
       <div style={styles.formGroup}>
-        <label style={styles.label}>Secteur d'activité</label>
+        <label style={styles.label}>Secteur d’activité</label>
         <input
           type="text"
           name="sector"

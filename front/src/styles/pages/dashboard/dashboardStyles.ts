@@ -12,13 +12,13 @@ export const dashboardStyles = {
     width: "80px",
     backgroundColor: "var(--color-main)",
     display: "flex",
-    flexDirection: "column" as "column",
+    flexDirection: "column" as const,
     alignItems: "center",
     paddingTop: "var(--spacing-normal)",
     paddingBottom: "var(--spacing-normal)",
     color: "var(--color-white)",
     boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
-    position: "fixed" as "fixed", // Modifié en fixed pour rester visible pendant le défilement
+    position: "fixed" as const, // Modifié en fixed pour rester visible pendant le défilement
     zIndex: 10,
     height: "100vh",
     top: 0,
@@ -31,13 +31,13 @@ export const dashboardStyles = {
     paddingTop: "8rem", // Espace pour aligner avec l'icône
     margin: 0,
     transition: "var(--animation-transition)",
-    position: "fixed" as "fixed", // Modifié en fixed pour rester visible pendant le défilement
+    position: "fixed" as const, // Modifié en fixed pour rester visible pendant le défilement
     left: "80px",
     top: 0,
     height: "100vh",
     zIndex: 5,
     boxShadow: "2px 0 5px rgba(0,0,0,0.05)",
-    overflowY: "auto" as "auto", // Permettre le défilement de la navigation
+    overflowY: "auto" as const, // Permettre le défilement de la navigation
   },
   navigationHidden: {
     display: "none",
@@ -113,7 +113,7 @@ export const dashboardStyles = {
     width: "100%",
     height: "100%",
     borderRadius: "var(--border-circle-radius)",
-    objectFit: "contain" as "contain",
+    objectFit: "contain" as const,
   },
   iconButton: {
     display: "flex",
@@ -196,13 +196,13 @@ export const dashboardStyles = {
   globalContainer: {
     display: "flex",
     width: "100%",
-    position: "relative" as "relative",
+    position: "relative" as const,
     margin: 0,
     padding: 0,
     minHeight: "100vh",
   },
   fixedSidebar: {
-    position: "fixed" as "fixed",
+    position: "fixed" as const,
     top: 0,
     left: 0,
     width: "80px",
@@ -215,9 +215,9 @@ export const dashboardStyles = {
     marginLeft: "80px",
     width: "calc(100% - 80px)",
     padding: "var(--spacing-big)",
-    overflowY: "auto" as "auto",
+    overflowY: "auto" as const,
     height: "auto",
     minHeight: "100vh",
-    boxSizing: "border-box" as "border-box",
+    boxSizing: "border-box" as const,
   },
-};
+} as const;

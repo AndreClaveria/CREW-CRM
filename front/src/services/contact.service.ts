@@ -1,7 +1,7 @@
 // services/contact.service.ts
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL_CLIENT || "http://localhost:3001/api";
+  process.env.NEXT_PUBLIC_API_URL_CLIENT || "http://localhost:3001/api/";
 
 export interface Contact {
   _id: string;
@@ -37,7 +37,7 @@ export const getAllContacts = async (): Promise<Contact[]> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/contacts`, {
+    const response = await fetch(`${API_URL}contacts`, {
       method: "GET",
       headers: {
         ...headers,
@@ -71,7 +71,7 @@ export const getContactById = async (id: string): Promise<Contact> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/contacts/${id}`, {
+    const response = await fetch(`${API_URL}contacts/${id}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -118,7 +118,7 @@ export const getContactsByClient = async (
     }
 
     console.log(`Appel API pour récupérer les contacts du client ${clientId}`);
-    const response = await fetch(`${API_URL}/contacts/client/${clientId}`, {
+    const response = await fetch(`${API_URL}contacts/client/${clientId}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -171,7 +171,7 @@ export const getContactsByCompany = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/contacts/company/${companyId}`, {
+    const response = await fetch(`${API_URL}contacts/company/${companyId}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -211,7 +211,7 @@ export const createContact = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/contacts`, {
+    const response = await fetch(`${API_URL}contacts`, {
       method: "POST",
       headers: {
         ...headers,
@@ -277,7 +277,7 @@ export const updateContact = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/contacts/${id}`, {
+    const response = await fetch(`${API_URL}contacts/${id}`, {
       method: "PUT",
       headers: {
         ...headers,
@@ -310,7 +310,7 @@ export const deleteContact = async (id: string): Promise<void> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/contacts/${id}`, {
+    const response = await fetch(`${API_URL}contacts/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

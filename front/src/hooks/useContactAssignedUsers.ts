@@ -16,7 +16,7 @@ interface UseContactAssignedUsersReturn {
  */
 export const useContactAssignedUsers = (
   contacts: Contact[] = [], // Valeur par défaut
-  currentUserId: string // ID de l'utilisateur connecté
+  currentUserId?: string // ID de l'utilisateur connecté
 ): UseContactAssignedUsersReturn => {
   const [assignedUsers, setAssignedUsers] = useState<{ [key: string]: User }>(
     {}

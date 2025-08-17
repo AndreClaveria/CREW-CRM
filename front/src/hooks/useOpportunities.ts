@@ -90,12 +90,16 @@ export const useOpportunities = ({
       // Mise à jour optimiste de l'état local
       setOpportunities((prevOpportunities) =>
         prevOpportunities.map((o) =>
-          o._id === opportunityId ? { ...o, status: newStatus } : o
+          o._id === opportunityId
+            ? { ...o, status: newStatus as Opportunity["status"] }
+            : o
         )
       );
 
       // Appel API pour mettre à jour le statut
-      await updateOpportunity(opportunityId, { status: newStatus });
+      await updateOpportunity(opportunityId, {
+        status: newStatus as Opportunity["status"],
+      });
       console.log(
         `Opportunité ${opportunityId} mise à jour avec statut: ${newStatus}`
       );

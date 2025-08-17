@@ -36,14 +36,14 @@ const ContactsSection: React.FC<ContactsSectionProps> = ({
 
       {contacts.length === 0 && (
         <p style={styles.noContactsMessage}>
-          Aucun contact ajouté. Cliquez sur "Ajouter un contact" pour en créer.
+          Aucun contact ajouté. Cliquez sur Ajouter un contact pour en créer.
         </p>
       )}
 
       {contacts.length >= maxContacts && (
         <p style={styles.maxContactsWarning}>
           Maximum {maxContacts} contacts autorisés pour la création initiale.
-          Vous pourrez en ajouter d'autres après la création du client.
+          Vous pourrez en ajouter d’autres après la création du client.
         </p>
       )}
 

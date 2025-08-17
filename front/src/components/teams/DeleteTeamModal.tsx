@@ -25,7 +25,7 @@ const DeleteTeamModal: React.FC<DeleteTeamModalProps> = ({
         <div style={styles.modalHeader}>
           <h3 style={styles.modalTitle}>Confirmer la suppression</h3>
           <p style={styles.modalText}>
-            Êtes-vous sûr de vouloir supprimer l'équipe{" "}
+            Êtes-vous sûr de vouloir supprimer l’équipe{" "}
             <strong>{teamName}</strong> ? Cette action ne peut pas être annulée.
           </p>
         </div>

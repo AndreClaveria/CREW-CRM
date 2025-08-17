@@ -69,7 +69,7 @@ const CompanyGeneralInfo: React.FC<CompanyGeneralInfoProps> = ({
       <div style={styles.twoColumnGrid}>
         <div>
           <label style={styles.label}>
-            Nom de l'entreprise <span style={styles.requiredField}>*</span>
+            Nom de l’entreprise <span style={styles.requiredField}>*</span>
           </label>
           <input
             type="text"
@@ -83,7 +83,7 @@ const CompanyGeneralInfo: React.FC<CompanyGeneralInfoProps> = ({
 
         <div>
           <label style={styles.label}>
-            Secteur d'activité <span style={styles.requiredField}>*</span>
+            Secteur d’activité <span style={styles.requiredField}>*</span>
           </label>
           <select
             name="industry"
@@ -99,7 +99,7 @@ const CompanyGeneralInfo: React.FC<CompanyGeneralInfoProps> = ({
             ))}
           </select>
           <div style={styles.helperText}>
-            Sélectionnez le secteur principal d'activité de votre entreprise
+            Sélectionnez le secteur principal d’activité de votre entreprise
           </div>
         </div>
       </div>

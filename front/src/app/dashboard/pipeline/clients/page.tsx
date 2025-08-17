@@ -61,7 +61,9 @@ const ClientList: React.FC = () => {
     return (
       <div style={{ padding: "20px" }}>
         <h2>Information</h2>
-        <p>Vous n'avez pas encore d'entreprise associée à votre compte.</p>
+        <p>
+          Vous n&apos;avez pas encore d&apos;entreprise associée à votre compte.
+        </p>
         <ActionButton
           onClick={() => router.push("/dashboard")}
           variant="secondary"

@@ -30,7 +30,7 @@ const OpportunityValueSection: React.FC<OpportunityValueSectionProps> = ({
           placeholder="Montant en euros"
         />
         <small style={styles.helperText}>
-          Valeur estimée de l'opportunité en euros
+          Valeur estimée de l’opportunité en euros
         </small>
       </div>
     </div>

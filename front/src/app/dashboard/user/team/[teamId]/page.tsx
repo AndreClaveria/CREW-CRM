@@ -4,12 +4,12 @@ import TeamDetails from "@/components/teams/TeamDetails";
 
 // Définir l'interface pour les paramètres
 interface TeamPageParams {
-  params: {
+  params: Promise<{
     teamId: string;
-  };
+  }>;
 }
 
 // Pour Next.js Pages Router
 export default function TeamDetailsPage({ params }: TeamPageParams) {
-  return <TeamDetails params={Promise.resolve(params)} />;
+  return <TeamDetails params={params} />;
 }

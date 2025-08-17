@@ -38,7 +38,7 @@ const OpportunityProductsSection: React.FC<OpportunityProductsSectionProps> = ({
       {products.length === 0 ? (
         <div style={styles.emptyState}>
           <p>
-            Aucun produit ajouté. Cliquez sur "Ajouter un produit" pour
+            Aucun produit ajouté. Cliquez sur Ajouter un produit pour
             commencer.
           </p>
         </div>

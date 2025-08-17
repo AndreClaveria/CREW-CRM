@@ -51,20 +51,32 @@ class EmailService {
   /**
    * Envoie un email sans persistance en base de données (méthode existante)
    */
+  // Fix pour la méthode sendEmail dans EmailService
+  // Fix complet pour la méthode sendEmail dans EmailService
   async sendEmail(options: SendEmailOptions): Promise<boolean> {
     const { to, subject, html, text, metadata = {} } = options;
 
     try {
-      const replyToString = `${defaultMailOptions.replyTo.name} <${defaultMailOptions.replyTo.email}>`;
-
       const mailOptions = {
-        ...defaultMailOptions,
-        replyTo: replyToString, // Override with string format
         to,
         subject,
         html,
-        text: text || html.replace(/<[^>]*>/g, "")
+        text: text || html.replace(/<[^>]*>/g, ""),
+        // Utiliser directement les valeurs de defaultMailOptions
+        from: {
+          name: defaultMailOptions.sender.name,
+          address: defaultMailOptions.sender.email
+        }
+        // Le replyTo sera géré par votre transporter automatiquement
       };
+
+      console.log("📧 Mail options debug:", {
+        from: mailOptions.from,
+        to: mailOptions.to,
+        subject: mailOptions.subject,
+        hasHtml: !!mailOptions.html
+      });
+
       const info = await transporter.sendMail(mailOptions);
 
       // Log les informations de l'email envoyé
@@ -86,7 +98,6 @@ class EmailService {
       return false;
     }
   }
-
   /**
    * DEBUG VERSION: Envoie un email CRM avec logging détaillé
    */

@@ -78,7 +78,6 @@ export const NavbarProvider = ({ children }: { children: ReactNode }) => {
     // Intercepter les navigations programmatiques
     const originalPush = router.push;
 
-    // @ts-ignore - Pour surcharger la méthode
     router.push = function (url: string, options?: any) {
       // Ajouter à l'historique avant la navigation
       setTimeout(() => {
@@ -91,7 +90,6 @@ export const NavbarProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       // Restaurer la méthode originale à la destruction du composant
 
-      // @ts-ignore
       router.push = originalPush;
     };
   }, [router, isInitialized]);

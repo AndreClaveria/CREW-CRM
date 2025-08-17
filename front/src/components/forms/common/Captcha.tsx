@@ -27,7 +27,7 @@ const Captcha: React.FC<CaptchaProps> = ({ onVerify, verified, styles }) => {
       </div>
       <div style={styles.captchaPlaceholder}>[Emplacement pour CAPTCHA]</div>
       <p style={styles.captchaInfo}>
-        Cliquez sur "Valider" pour simuler la vérification du CAPTCHA
+        Cliquez sur Valider pour simuler la vérification du CAPTCHA
       </p>
     </div>
   );

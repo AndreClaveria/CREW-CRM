@@ -1,5 +1,5 @@
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL_METRICS || "http://localhost:3004/api";
+  process.env.NEXT_PUBLIC_API_URL_METRICS || "http://localhost:3004/api/";
 
 export interface RequestMetrics {
   timestamp: Date;
@@ -107,7 +107,7 @@ class MetricsService {
    */
   async getRealTimeMetrics(): Promise<MetricsResponse> {
     try {
-      const response = await fetch(`${API_URL}/metrics/realtime`, {
+      const response = await fetch(`${API_URL}metrics/realtime`, {
         method: "GET",
         headers: this.getAuthHeaders(),
       });
@@ -131,7 +131,7 @@ class MetricsService {
    */
   async getLastHourMetrics(): Promise<MetricsResponse> {
     try {
-      const response = await fetch(`${API_URL}/metrics/last-hour`, {
+      const response = await fetch(`${API_URL}metrics/last-hour`, {
         method: "GET",
         headers: this.getAuthHeaders(),
       });
@@ -155,7 +155,7 @@ class MetricsService {
    */
   async getLast24HoursMetrics(): Promise<MetricsResponse> {
     try {
-      const response = await fetch(`${API_URL}/metrics/last-24-hours`, {
+      const response = await fetch(`${API_URL}metrics/last-24-hours`, {
         method: "GET",
         headers: this.getAuthHeaders(),
       });
@@ -187,7 +187,7 @@ class MetricsService {
         end: end.toISOString(),
       });
 
-      const response = await fetch(`${API_URL}/metrics/custom?${params}`, {
+      const response = await fetch(`${API_URL}metrics/custom?${params}`, {
         method: "GET",
         headers: this.getAuthHeaders(),
       });
@@ -215,7 +215,7 @@ class MetricsService {
     try {
       const params = new URLSearchParams({ period });
       const response = await fetch(
-        `${API_URL}/metrics/distribution/requests?${params}`,
+        `${API_URL}metrics/distribution/requests?${params}`,
         {
           method: "GET",
           headers: this.getAuthHeaders(),
@@ -245,7 +245,7 @@ class MetricsService {
     try {
       const params = new URLSearchParams({ period });
       const response = await fetch(
-        `${API_URL}/metrics/distribution/status?${params}`,
+        `${API_URL}metrics/distribution/status?${params}`,
         {
           method: "GET",
           headers: this.getAuthHeaders(),
@@ -275,7 +275,7 @@ class MetricsService {
     try {
       const params = new URLSearchParams({ period });
       const response = await fetch(
-        `${API_URL}/metrics/performance/endpoints?${params}`,
+        `${API_URL}metrics/performance/endpoints?${params}`,
         {
           method: "GET",
           headers: this.getAuthHeaders(),

@@ -82,7 +82,9 @@ export const useCompanyOpportunities = ({
     try {
       setOpportunities((prevOpportunities) =>
         prevOpportunities.map((o) =>
-          o._id === opportunityId ? { ...o, status: newStatus } : o
+          o._id === opportunityId
+            ? { ...o, status: newStatus as Opportunity["status"] }
+            : o
         )
       );
 

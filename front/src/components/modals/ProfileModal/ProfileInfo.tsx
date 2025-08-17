@@ -46,7 +46,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ userData }) => {
       </div>
 
       <div style={profileModalStyles.formField}>
-        <label style={profileModalStyles.fieldLabel}>Langue d'affichage</label>
+        <label style={profileModalStyles.fieldLabel}>Langue d’affichage</label>
         <div style={profileModalStyles.languageContainer}>
           <select
             value={language}
@@ -61,7 +61,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ userData }) => {
           <button style={profileModalStyles.button}>Appliquer</button>
         </div>
         <p style={profileModalStyles.p}>
-          Cette langue sera utilisée dans toute l'interface du CRM.
+          Cette langue sera utilisée dans toute l’interface du CRM.
         </p>
       </div>
     </div>

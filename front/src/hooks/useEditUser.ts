@@ -143,13 +143,13 @@ export const useEditUser = ({
       setLoadingWithMessage(true, "Mise à jour du compte utilisateur...");
 
       // Création de l'objet à envoyer à l'API
-      const updateData: UpdateUserRequest = {
+      const updateData: Partial<UpdateUserRequest & { role?: string }> = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
-        role: formData.role,
         phoneNumber: formData.phoneNumber,
         active: formData.active,
+        role: formData.role,
       };
 
       // Ajouter le mot de passe seulement si changePassword est activé

@@ -15,7 +15,7 @@ const UserActivityCard: React.FC = () => {
         <div style={styles.noDataCard}>
           <FaExclamationTriangle style={styles.noDataIcon} />
           <div style={styles.noDataText}>
-            Les données d'activité ne sont pas encore disponibles.
+            Les données d’activité ne sont pas encore disponibles.
           </div>
         </div>
       </div>

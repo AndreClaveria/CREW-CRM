@@ -96,7 +96,7 @@ const TeamDetails: React.FC<TeamDetailsProps> = ({ params }) => {
         <div style={styles.loadingSpinner}>
           <FaSyncAlt style={{ animation: "spin 1s linear infinite" }} />
         </div>
-        <p>Chargement des informations de l'équipe...</p>
+        <p>Chargement des informations de l’équipe...</p>
       </div>
     );
   }

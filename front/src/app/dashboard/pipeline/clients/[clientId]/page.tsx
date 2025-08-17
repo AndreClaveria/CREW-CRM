@@ -54,6 +54,22 @@ const ClientDetail: React.FC = () => {
   // État local pour les interactions pour mise à jour immédiate
   const [localInteractions, setLocalInteractions] = useState<any[]>([]);
 
+  // NEW: Initialize localInteractions when client data is loaded
+  useEffect(() => {
+    if (client) {
+      setCommercialData({
+        estimatedBudget: client.estimatedBudget?.toString() || "",
+        companySize: client.companySize || "",
+        hasWorkedWithUs: client.hasWorkedWithUs || false,
+        knowsUs: client.knowsUs || false,
+        goodForCustomer: client.goodForCustomer || 50,
+      });
+
+      // Initialize localInteractions with existing client interactions
+      setLocalInteractions(client.interactions || []);
+    }
+  }, [client]);
+
   // Nettoyage des timeouts au démontage du composant
   useEffect(() => {
     return () => {
@@ -295,7 +311,7 @@ const ClientDetail: React.FC = () => {
       <div style={{ padding: "20px" }}>
         <h2>Client non trouvé</h2>
         <p>
-          Le client demandé n'existe pas ou vous n'avez pas les permissions pour
+          Le client demandé n’existe pas ou vous n’avez pas les permissions pour
           le voir.
         </p>
         <ActionButton
@@ -440,7 +456,7 @@ const ClientDetail: React.FC = () => {
                   fontSize: "14px",
                 }}
               >
-                Taille de l'entreprise:{" "}
+                Taille de l’entreprise:{" "}
                 {commercialData.companySize || "Non définie"}
               </label>
               <select
@@ -634,7 +650,7 @@ const ClientDetail: React.FC = () => {
                     fontSize: "14px",
                   }}
                 >
-                  Type d'interaction:
+                  Type d’interaction:
                 </label>
                 <select
                   value={newInteraction.type}
@@ -885,7 +901,7 @@ const ClientDetail: React.FC = () => {
                         lineHeight: "1.4",
                       }}
                     >
-                      "{interaction.notes}"
+                      {interaction.notes}
                     </p>
                   </div>
                 )}
@@ -907,7 +923,7 @@ const ClientDetail: React.FC = () => {
               📝 Aucune interaction enregistrée pour ce client.
             </p>
             <p style={{ margin: "5px 0 0 0", fontSize: "14px" }}>
-              Cliquez sur "Ajouter interaction" pour commencer le suivi.
+              Cliquez sur Ajouter interaction pour commencer le suivi.
             </p>
           </div>
         )}

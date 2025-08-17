@@ -28,10 +28,10 @@ const UserHeader: React.FC<UserHeaderProps> = ({
       <div>
         <h1 style={styles.pageTitle}>
           <FaArrowLeft style={{ cursor: "pointer" }} onClick={navigateBack} />
-          Détails de l'utilisateur
+          Détails de l’utilisateur
         </h1>
         <div style={styles.pageSubtitle}>
-          Gestion et informations de l'utilisateur
+          Gestion et informations de l’utilisateur
         </div>
       </div>
       <div style={styles.buttonContainer}>

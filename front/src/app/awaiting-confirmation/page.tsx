@@ -54,14 +54,16 @@ const AwaitingConfirmationPage = () => {
                 : styles.primaryButton
             }
           >
-            {loading ? "Envoi en cours..." : "Renvoyer l'email de confirmation"}
+            {loading
+              ? "Envoi en cours..."
+              : "Renvoyer l&apos;email de confirmation"}
           </button>
 
           <button
             onClick={() => router.push("/auth")}
             style={styles.secondaryButton}
           >
-            Retour à l'authentification
+            Retour à l&apos;authentification
           </button>
         </div>
 

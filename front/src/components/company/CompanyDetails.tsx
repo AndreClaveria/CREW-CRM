@@ -63,7 +63,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ params }) => {
   if (isLoading) {
     return (
       <div style={{ padding: "20px", textAlign: "center" }}>
-        Chargement des informations de l'entreprise...
+        Chargement des informations de l&apos;entreprise...
       </div>
     );
   }

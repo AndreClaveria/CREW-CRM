@@ -100,7 +100,7 @@ const ClientOpportunitiesCard: React.FC<ClientOpportunitiesCardProps> = ({
         <div style={styles.noDataCard}>
           <FaExclamationTriangle style={styles.noDataIcon} />
           <div style={styles.noDataText}>
-            Aucune opportunité n'a été ajoutée pour ce client.
+            Aucune opportunité n’a été ajoutée pour ce client.
           </div>
           <ActionButton
             onClick={navigateToOpportunitiesManagement}

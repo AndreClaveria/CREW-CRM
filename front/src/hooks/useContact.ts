@@ -30,11 +30,11 @@ export const useContact = ({
         const response = await getContactsByCompany(companyId);
 
         // Gérer différents formats de réponse
-        let contactsData;
+        let contactsData: Contact[];
         if (response && typeof response === "object" && "data" in response) {
-          contactsData = response.data;
+          contactsData = (response as { data: Contact[] }).data;
         } else if (Array.isArray(response)) {
-          contactsData = response;
+          contactsData = response as Contact[];
         } else {
           contactsData = [];
         }

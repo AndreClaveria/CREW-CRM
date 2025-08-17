@@ -1,6 +1,6 @@
 export const profileModalStyles = {
   overlay: {
-    position: "fixed" as "fixed",
+    position: "fixed" as const,
     top: 0,
     left: 0,
     right: 0,
@@ -28,7 +28,7 @@ export const profileModalStyles = {
     alignItems: "center",
     padding: "16px 20px",
     borderBottomWidth: "var(--border-width)",
-    borderBottomStyle: "solid" as "solid",
+    borderBottomStyle: "solid" as const,
     borderBottomColor: "var(--table-border)",
   },
 
@@ -62,7 +62,7 @@ export const profileModalStyles = {
   tabButton: {
     width: "100%",
     padding: "14px 16px",
-    textAlign: "left" as "left",
+    textAlign: "left" as const,
     backgroundColor: "transparent",
     borderTopWidth: 0,
     borderRightWidth: 0,
@@ -77,14 +77,14 @@ export const profileModalStyles = {
   tabButtonActive: {
     backgroundColor: "var(--table-row-selected-bg)",
     borderLeftWidth: "3px",
-    borderLeftStyle: "solid" as "solid",
+    borderLeftStyle: "solid" as const,
     borderLeftColor: "var(--color-blue)",
   },
 
   mainContent: {
     width: "67%",
     padding: "var(--spacing-big) 30px",
-    overflowY: "auto" as "auto",
+    overflowY: "auto" as const,
   },
 
   inputField: {
@@ -119,7 +119,7 @@ export const profileModalStyles = {
   sidebar: {
     width: "33%",
     borderRightWidth: "var(--border-width)",
-    borderRightStyle: "solid" as "solid",
+    borderRightStyle: "solid" as const,
     borderRightColor: "var(--table-border)",
     backgroundColor: "var(--color-grey-100)",
   },
@@ -161,8 +161,8 @@ export const profileModalStyles = {
   },
 
   profileInfo: {
-    display: "flex" as "flex",
-    flexDirection: "column" as "column",
+    display: "flex" as const,
+    flexDirection: "column" as const,
   },
 
   h2: {
@@ -283,7 +283,7 @@ export const profileModalStyles = {
     backgroundColor: "var(--color-error-light)",
     borderRadius: "var(--border-radius)",
     maxWidth: "400px",
-    textAlign: "center" as "center",
+    textAlign: "center" as const,
   },
 
   errorStateTitle: {
@@ -303,4 +303,4 @@ export const profileModalStyles = {
     borderRadius: "var(--border-small-radius)",
     cursor: "pointer",
   },
-};
+} as const;

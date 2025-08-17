@@ -92,7 +92,7 @@ const TeamInfoCard: React.FC<TeamInfoCardProps> = ({
           <div style={styles.detailItem}>
             <div style={styles.detailLabel}>
               <FaCrown />
-              Responsable d'équipe
+              Responsable d’équipe
             </div>
             <div
               style={{

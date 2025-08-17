@@ -147,7 +147,7 @@ const OpportunityForm: React.FC<OpportunityFormProps> = ({
       case 1:
         return (
           <div style={styles.container}>
-            <h2 style={styles.sectionTitle}>Informations de l'opportunité</h2>
+            <h2 style={styles.sectionTitle}>Informations de l’opportunité</h2>
             <OpportunityInfoSection
               title={formData.title}
               description={formData.description}
@@ -222,7 +222,7 @@ const OpportunityForm: React.FC<OpportunityFormProps> = ({
                 <div style={styles.summaryContainer}>
                   <div style={styles.summarySection}>
                     <h3 style={styles.summarySectionTitle}>
-                      Informations de l'opportunité
+                      Informations de l’opportunité
                     </h3>
                     <div style={styles.summaryItem}>
                       <div style={styles.summaryLabel}>Titre :</div>

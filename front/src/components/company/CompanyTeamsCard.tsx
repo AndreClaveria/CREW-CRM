@@ -78,7 +78,7 @@ const CompanyTeamsCard: React.FC<CompanyTeamsCardProps> = ({
         <div style={styles.noDataCard}>
           <FaExclamationTriangle style={styles.noDataIcon} />
           <div style={styles.noDataText}>
-            Aucune équipe n'a été créée pour cette entreprise.
+            Aucune équipe n&apos;a été créée pour cette entreprise.
           </div>
           <ActionButton
             onClick={navigateToTeamsManagement}

@@ -21,7 +21,7 @@ const ClientEvaluationSection: React.FC<ClientEvaluationSectionProps> = ({
 
       <div>
         <label style={styles.label}>
-          Indicateur "bonne poire" ({goodForCustomer}/100)
+          Indicateur bonne poire ({goodForCustomer}/100)
         </label>
         <input
           type="range"

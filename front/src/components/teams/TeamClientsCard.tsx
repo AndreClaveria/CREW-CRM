@@ -74,7 +74,7 @@ const TeamClientsCard: React.FC<TeamClientsCardProps> = ({
         <div style={styles.noDataCard}>
           <FaExclamationTriangle style={styles.noDataIcon} />
           <div style={styles.noDataText}>
-            Aucun client n'a été assigné à cette équipe.
+            Aucun client n’a été assigné à cette équipe.
           </div>
           {/* Bouton visible seulement si l'utilisateur peut gérer l'équipe */}
           {canManageTeam && (

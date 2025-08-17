@@ -2,7 +2,7 @@ import { getToken } from "./auth.service";
 
 // api/dashboard.ts
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL_CLIENT || "http://localhost:3001/api";
+  process.env.NEXT_PUBLIC_API_URL_CLIENT || "http://localhost:3001/api/";
 
 export const fetchUserDashboard = async () => {
   const token = getToken();
@@ -12,7 +12,7 @@ export const fetchUserDashboard = async () => {
   }
   const userId = getUserIdFromToken(token);
 
-  const response = await fetch(`${API_URL}/dashboard/${userId}`, {
+  const response = await fetch(`${API_URL}dashboard/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",

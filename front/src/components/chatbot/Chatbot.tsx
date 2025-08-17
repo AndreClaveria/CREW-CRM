@@ -867,7 +867,7 @@ const Chatbot: React.FC<ChatbotProps> = ({
                   style={styles.clearButton}
                   className="chatbot-clear"
                 >
-                  Effacer l'historique
+                  Effacer l&apos;historique
                 </button>
               </div>
             )}

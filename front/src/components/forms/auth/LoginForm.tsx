@@ -9,6 +9,7 @@ import Logo_User from "@public/img/login/email.svg";
 import Logo_Password from "@public/img/login/password_img.svg";
 import Logo_Google from "@public/img/login/google_img.svg";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api/";
 const LoginForm: React.FC = () => {
   const { login: authLogin, isLoading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
@@ -31,7 +32,7 @@ const LoginForm: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+    window.location.href = `${API_URL}auth/google`;
   };
   return (
     <>

@@ -128,7 +128,7 @@ export const useClientDetails = (clientId: string): UseClientDetailsReturn => {
         // Récupérer les opportunités associées
         try {
           const opportunitiesData = await getOpportunitiesByClient(clientId);
-          let normalizedOpportunities = Array.isArray(opportunitiesData)
+          const normalizedOpportunities = Array.isArray(opportunitiesData)
             ? opportunitiesData
             : opportunitiesData &&
               typeof opportunitiesData === "object" &&

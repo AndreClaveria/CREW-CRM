@@ -1,7 +1,7 @@
 // services/ai.service.ts - INTERFACES MISES À JOUR
 
 const AI_API_URL =
-  process.env.NEXT_PUBLIC_API_URL_IA || "http://localhost:3005/api";
+  process.env.NEXT_PUBLIC_API_URL_IA || "http://localhost:3005/api/";
 
 // ✅ Interface complète correspondant exactement à votre API
 export interface AIAnalysisResult {
@@ -147,7 +147,7 @@ export const analyzeClient = async (
     console.log(`🤖 Début de l'analyse IA pour le client: ${clientId}`);
 
     // ✅ URL cohérente
-    const analyzeUrl = `${AI_API_URL}/ai/analyze/${clientId}`;
+    const analyzeUrl = `${AI_API_URL}ai/analyze/${clientId}`;
     console.log(`📡 URL d'analyse: ${analyzeUrl}`);
 
     const response = await fetch(analyzeUrl, {

@@ -85,7 +85,7 @@ const TeamMembersCard: React.FC<TeamMembersCardProps> = ({
         <div style={styles.noDataCard}>
           <FaExclamationTriangle style={styles.noDataIcon} />
           <div style={styles.noDataText}>
-            Aucun membre n'a été ajouté à cette équipe.
+            Aucun membre n’a été ajouté à cette équipe.
           </div>
           {canManageTeam && (
             <ActionButton

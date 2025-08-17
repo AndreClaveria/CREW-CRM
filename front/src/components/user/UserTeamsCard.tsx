@@ -55,7 +55,7 @@ const UserTeamsCard: React.FC<UserTeamsCardProps> = ({
           <div style={styles.noDataCard}>
             <FaExclamationTriangle style={styles.noDataIcon} />
             <div style={styles.noDataText}>
-              Cet utilisateur n'appartient à aucune équipe.
+              Cet utilisateur n’appartient à aucune équipe.
             </div>
           </div>
         )}

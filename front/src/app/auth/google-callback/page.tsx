@@ -4,6 +4,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useGoogleCallback } from "@/hooks/useGoogleCallback";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+export const runtime = "edge";
+
 export default function GoogleCallbackPage() {
   const { setLoadingWithMessage } = useAuth();
 

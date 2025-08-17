@@ -1,7 +1,6 @@
 // services/opportunity.service.ts
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL_CLIENT || "http://localhost:3001/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api/";
 
 export interface Product {
   name: string;
@@ -43,7 +42,7 @@ export const getAllOpportunities = async (): Promise<Opportunity[]> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/opportunities`, {
+    const response = await fetch(`${API_URL}opportunities`, {
       method: "GET",
       headers: {
         ...headers,
@@ -76,7 +75,7 @@ export const getOpportunityById = async (id: string): Promise<Opportunity> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/opportunities/${id}`, {
+    const response = await fetch(`${API_URL}opportunities/${id}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -144,7 +143,7 @@ export const getOpportunitiesByCompany = async (
       throw new Error("Non authentifié");
     }
 
-    const url = `${API_URL}/opportunities/company/${companyId}`;
+    const url = `${API_URL}opportunities/company/${companyId}`;
     console.log("URL de l'API pour les opportunités:", url);
 
     const response = await fetch(url, {
@@ -205,16 +204,13 @@ export const getOpportunitiesByClient = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(
-      `${API_URL}/opportunities/client/${clientId}`,
-      {
-        method: "GET",
-        headers: {
-          ...headers,
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}opportunities/client/${clientId}`, {
+      method: "GET",
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -249,7 +245,7 @@ export const getOpportunitiesByStatus = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/opportunities/status/${status}`, {
+    const response = await fetch(`${API_URL}opportunities/status/${status}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -287,7 +283,7 @@ export const createOpportunity = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/opportunities`, {
+    const response = await fetch(`${API_URL}opportunities`, {
       method: "POST",
       headers: {
         ...headers,
@@ -323,7 +319,7 @@ export const updateOpportunity = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/opportunities/${id}`, {
+    const response = await fetch(`${API_URL}opportunities/${id}`, {
       method: "PUT",
       headers: {
         ...headers,
@@ -356,7 +352,7 @@ export const deleteOpportunity = async (id: string): Promise<void> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/opportunities/${id}`, {
+    const response = await fetch(`${API_URL}opportunities/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -389,7 +385,7 @@ export const addContactToOpportunity = async (
     }
 
     const response = await fetch(
-      `${API_URL}/opportunities/${opportunityId}/contacts/${contactId}`,
+      `${API_URL}opportunities/${opportunityId}/contacts/${contactId}`,
       {
         method: "POST",
         headers: {

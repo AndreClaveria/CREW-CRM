@@ -19,11 +19,11 @@ const TeamInfoSection: React.FC<TeamInfoSectionProps> = ({
 }) => {
   return (
     <div style={styles.section}>
-      <h2 style={styles.sectionTitle}>Informations de l'équipe</h2>
+      <h2 style={styles.sectionTitle}>Informations de l’équipe</h2>
 
       <div style={styles.formGroup}>
         <label style={styles.label}>
-          Nom de l'équipe <span style={styles.requiredField}>*</span>
+          Nom de l’équipe <span style={styles.requiredField}>*</span>
         </label>
         <input
           type="text"

@@ -75,7 +75,7 @@ const TeamMembersManagement: React.FC<TeamMembersManagementProps> = ({
       <div style={{ padding: "20px", color: "#d32f2f" }}>
         <h2>Erreur</h2>
         <p>
-          Paramètres manquants. Impossible de charger les détails de l'équipe.
+          Paramètres manquants. Impossible de charger les détails de l’équipe.
         </p>
         <ActionButton
           onClick={navigateToDashboard}
@@ -100,7 +100,7 @@ const TeamMembersManagement: React.FC<TeamMembersManagementProps> = ({
       >
         <div>
           <h1 style={{ fontSize: "24px", marginBottom: "8px" }}>
-            Gestion des membres de l'équipe
+            Gestion des membres de l’équipe
           </h1>
           {company && team && (
             <p style={{ color: "#666" }}>
@@ -263,7 +263,7 @@ const TeamMembersManagement: React.FC<TeamMembersManagementProps> = ({
                             marginTop: "4px",
                           }}
                         >
-                          Chef d'équipe
+                          Chef d’équipe
                         </span>
                       )}
                   </div>

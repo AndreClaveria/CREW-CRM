@@ -1,10 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEmailVerification } from "@/hooks/useEmailVerification";
 import { confirmEmailStyles as styles } from "@/styles/pages/confirm-email/confirmEmailStyles";
 
-const ConfirmEmailPage = () => {
+// Component that uses useSearchParams - must be wrapped in Suspense
+function ConfirmEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -76,18 +78,42 @@ const ConfirmEmailPage = () => {
 
         {status === "success" && (
           <p style={styles.redirectMessage}>
-            Vous allez être redirigé vers l'étape suivante dans quelques
+            Vous allez être redirigé vers l&apos;étape suivante dans quelques
             secondes...
           </p>
         )}
 
         {status === "error" && (
           <button onClick={() => router.push("/auth")} style={styles.button}>
-            Retour à l'authentification
+            Retour à l&apos;authentification
           </button>
         )}
       </div>
     </div>
+  );
+}
+
+// Loading fallback component
+function ConfirmEmailLoading() {
+  return (
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <div style={styles.iconContainer}>
+          <div style={styles.loadingIcon}></div>
+        </div>
+        <h2 style={styles.headingLoading}>Chargement...</h2>
+        <p style={styles.message}>Préparation de la vérification...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main page component with Suspense wrapper
+const ConfirmEmailPage = () => {
+  return (
+    <Suspense fallback={<ConfirmEmailLoading />}>
+      <ConfirmEmailContent />
+    </Suspense>
   );
 };
 

@@ -1,7 +1,7 @@
 // services/email.service.ts
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL_NOTIFICATION || "http://localhost:3002/api";
+  process.env.NEXT_PUBLIC_API_URL_NOTIFICATION || "http://localhost:3003/api/";
 
 // ============================================
 // INTERFACES ET TYPES CORRIGÉS
@@ -185,7 +185,7 @@ export const getAllEmails = async (
       ? `email/history?${queryParams}`
       : `email/history`;
 
-    const response = await fetch(`${API_URL}/${endpoint}`, {
+    const response = await fetch(`${API_URL}${endpoint}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -218,7 +218,7 @@ export const getEmailById = async (id: string): Promise<Email> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/email/${id}/details`, {
+    const response = await fetch(`${API_URL}email/${id}/details`, {
       method: "GET",
       headers: {
         ...headers,
@@ -273,7 +273,7 @@ export const getEmailsByUser = async (
       ? `email/user/${userId}/history?${queryParams}`
       : `email/user/${userId}/history`;
 
-    const response = await fetch(`${API_URL}/${endpoint}`, {
+    const response = await fetch(`${API_URL}${endpoint}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -376,7 +376,7 @@ export const markEmailAsRead = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/email/${emailId}/read`, {
+    const response = await fetch(`${API_URL}email/${emailId}/read`, {
       method: "PATCH",
       headers: {
         ...headers,
@@ -415,7 +415,7 @@ export const deleteEmail = async (
     }
 
     const queryParams = permanent ? "?permanent=true" : "";
-    const response = await fetch(`${API_URL}/email/${id}${queryParams}`, {
+    const response = await fetch(`${API_URL}email/${id}${queryParams}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -452,7 +452,7 @@ export const getEmailStats = async (
     const queryParams = buildQueryParams(filters);
     const endpoint = queryParams ? `email/stats?${queryParams}` : "email/stats";
 
-    const response = await fetch(`${API_URL}/${endpoint}`, {
+    const response = await fetch(`${API_URL}${endpoint}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -493,7 +493,7 @@ export const getEmailStatsByUser = async (
       ? `email/user/${userId}/stats?${queryParams}`
       : `email/user/${userId}/stats`;
 
-    const response = await fetch(`${API_URL}/${endpoint}`, {
+    const response = await fetch(`${API_URL}${endpoint}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -528,7 +528,7 @@ export const getEmailConversation = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/email/${emailId}/conversation`, {
+    const response = await fetch(`${API_URL}email/${emailId}/conversation`, {
       method: "GET",
       headers: {
         ...headers,
@@ -561,7 +561,7 @@ export const getEmailReplies = async (emailId: string): Promise<Email[]> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/email/${emailId}/replies`, {
+    const response = await fetch(`${API_URL}email/${emailId}/replies`, {
       method: "GET",
       headers: {
         ...headers,
@@ -596,7 +596,7 @@ export const getEmailByTrackingId = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/email/tracking/${trackingId}`, {
+    const response = await fetch(`${API_URL}email/tracking/${trackingId}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -633,7 +633,7 @@ export const testEmailConnection = async (): Promise<boolean> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/email/test-connection`, {
+    const response = await fetch(`${API_URL}email/test-connection`, {
       method: "GET",
       headers: {
         ...headers,

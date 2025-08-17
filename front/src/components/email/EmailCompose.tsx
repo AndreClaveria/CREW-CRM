@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useEmail } from "@/hooks/useMail";
 import { useContact } from "@/hooks/useContact";
+import { Contact } from "@/types/contact.types";
 import ActionButton from "@/components/common/ActionButton";
 import {
   FaTimes,
@@ -133,7 +134,10 @@ const EmailComposeModal: React.FC<EmailComposeModalProps> = ({
   // Filter contacts based on search term
   const filteredContacts = contacts.filter(
     (contact) =>
-      contact.name?.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
+      // Combine firstName and lastName for name search
+      `${contact.firstName || ""} ${contact.lastName || ""}`
+        .toLowerCase()
+        .includes(contactSearchTerm.toLowerCase()) ||
       contact.email?.toLowerCase().includes(contactSearchTerm.toLowerCase())
   );
 
@@ -174,7 +178,6 @@ const EmailComposeModal: React.FC<EmailComposeModalProps> = ({
     setShowContactDropdown(false);
     setContactSearchTerm("");
   };
-
   // ✅ FONCTION CORRIGÉE - handleSend avec gestion des contacts via le hook
   // ✅ FONCTION CORRIGÉE - handleSend avec gestion des contacts via le hook
   const handleSend = async () => {
@@ -202,44 +205,37 @@ const EmailComposeModal: React.FC<EmailComposeModalProps> = ({
     try {
       const primaryEmail = emails[0];
 
-      // ✅ Utiliser le hook useContact pour trouver le contact
       console.log(`🔍 Recherche du contact pour: ${primaryEmail}`);
       console.log(`📋 Contacts disponibles:`, contacts);
 
-      let contactId = null;
-      let toEmail = "";
+      let contactId: string; // ✅ Explicitly type as string
+      let toEmail: string;
       const existingContact = contacts.find(
         (c) => c.email && c.email.toLowerCase() === primaryEmail.toLowerCase()
       );
 
       if (existingContact) {
-        // ✅ CORRECTION: Utiliser _id et email du contact existant
+        // ✅ Ensure _id exists and is string
         contactId = existingContact._id;
-        toEmail = existingContact.email;
+        toEmail = existingContact.email || primaryEmail; // ✅ Fallback to primaryEmail
         console.log(`✅ Contact trouvé:`, existingContact);
       } else {
-        // Si pas de contact trouvé, créer un ID temporaire
-        // ou vous pouvez créer un nouveau contact via votre API
+        // Create temporary ID
         contactId = `temp_${primaryEmail
           .replace("@", "_")
           .replace(".", "_")}_${Date.now()}`;
-        toEmail = primaryEmail; // Utiliser l'email saisi dans le formulaire
+        toEmail = primaryEmail;
         console.warn(
           `⚠️ Aucun contact trouvé pour ${primaryEmail}, utilisation d'un ID temporaire: ${contactId}`
         );
-
-        // TODO: Optionnel - Créer un nouveau contact via votre API
-        // const newContact = await createContact({ email: primaryEmail, companyId });
-        // contactId = newContact._id; // ✅ Utiliser _id ici aussi
-        // toEmail = newContact.email;
       }
 
-      // ✅ STRUCTURE COMPLÈTE avec tous les champs requis
+      // ✅ Rest of your email sending logic remains the same
       const emailData = {
         fromUserId: userId,
         fromCompanyId: companyId,
         toContactId: contactId,
-        toEmail: toEmail, // ✅ Utiliser l'email du contact ou du formulaire
+        toEmail: toEmail,
         subject: formData.subject.trim(),
         body: formData.body.trim(),
         // Champs optionnels
@@ -537,7 +533,7 @@ const EmailComposeModal: React.FC<EmailComposeModalProps> = ({
                     ) : (
                       filteredContacts.map((contact) => (
                         <div
-                          key={contact._id} // ✅ Utiliser _id au lieu de id
+                          key={contact._id}
                           onClick={() => handleContactSelect(contact)}
                           style={{
                             padding: "8px 12px",
@@ -558,8 +554,11 @@ const EmailComposeModal: React.FC<EmailComposeModalProps> = ({
                           <FaUser size={10} color="#666" />
                           <div>
                             <div style={{ fontWeight: "500", color: "#333" }}>
-                              {contact.firstName || "Sans nom"}{" "}
-                              {contact.lastName || ""}
+                              {/* ✅ Use firstName and lastName instead of name */}
+                              {contact.firstName || ""} {contact.lastName || ""}{" "}
+                              {!contact.firstName &&
+                                !contact.lastName &&
+                                "Sans nom"}
                             </div>
                             <div style={{ color: "#666", fontSize: "11px" }}>
                               {contact.email || "Pas d'email"}

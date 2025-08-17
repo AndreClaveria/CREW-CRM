@@ -171,7 +171,9 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ clientId, clientName }) => {
             }}
           >
             <span style={{ fontSize: "20px", marginRight: "10px" }}>❌</span>
-            <strong style={{ color: "#d32f2f" }}>Erreur d'analyse IA</strong>
+            <strong style={{ color: "#d32f2f" }}>
+              Erreur d&apos;analyse IA
+            </strong>
           </div>
           <p style={{ color: "#666", margin: 0, fontSize: "14px" }}>{error}</p>
           <ActionButton onClick={clearError} variant="secondary" size="small">
@@ -198,7 +200,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ clientId, clientName }) => {
             Analyse IA en cours...
           </h4>
           <p style={{ color: "#666", margin: 0 }}>
-            L'IA analyse les données de <strong>{clientName}</strong>
+            L&apos;IA analyse les données de <strong>{clientName}</strong>
           </p>
           <div
             style={{
@@ -331,7 +333,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ clientId, clientName }) => {
               }}
             >
               <h5 style={{ margin: "0 0 12px 0", color: "#495057" }}>
-                🧠 Raisonnement de l'IA
+                🧠 Raisonnement de l&apos;IA
               </h5>
               <p
                 style={{
@@ -345,7 +347,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ clientId, clientName }) => {
                   borderLeft: "4px solid #007bff",
                 }}
               >
-                "{analysis.reasoning}"
+                {analysis.reasoning}
               </p>
             </div>
           )}
@@ -587,7 +589,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ clientId, clientName }) => {
                   }}
                 >
                   <strong style={{ color: "#495057" }}>
-                    🛠️ Stratégie d'Atténuation:
+                    🛠️ Stratégie d&apos;Atténuation:
                   </strong>
                   <p style={{ margin: "5px 0 0 0", color: "#212529" }}>
                     {analysis.riskAssessment.mitigation}
@@ -609,7 +611,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ clientId, clientName }) => {
               }}
             >
               <h5 style={{ margin: "0 0 20px 0", color: "#495057" }}>
-                🎯 Plan d'Action
+                🎯 Plan d&apos;Action
               </h5>
 
               <div
@@ -813,12 +815,12 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ clientId, clientName }) => {
             Aucune analyse IA disponible
           </h4>
           <p style={{ color: "#888", margin: "0 0 20px 0", fontSize: "14px" }}>
-            Cliquez sur "Analyser avec IA" pour obtenir une analyse intelligente
+            Cliquez sur Analyser avec IA pour obtenir une analyse intelligente
             de ce client
           </p>
           <p style={{ color: "#aaa", margin: 0, fontSize: "12px" }}>
-            L'IA analysera les données du client et fournira des recommandations
-            personnalisées
+            L&apos;IA analysera les données du client et fournira des
+            recommandations personnalisées
           </p>
         </div>
       )}

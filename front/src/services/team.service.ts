@@ -1,5 +1,5 @@
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL_BDD || "http://localhost:3002/api";
+  process.env.NEXT_PUBLIC_API_URL_BDD || "http://localhost:3002/api/";
 import { User } from "./user.service";
 
 export interface Team {
@@ -24,11 +24,11 @@ const headers = {
 export const getAllTeams = async (): Promise<Team[]> => {
   try {
     const token = localStorage.getItem("token");
-    if (!token) { 
+    if (!token) {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/teams`, {
+    const response = await fetch(`${API_URL}teams`, {
       method: "GET",
       headers: {
         ...headers,
@@ -61,7 +61,7 @@ export const getTeamById = async (id: string): Promise<Team> => {
     }
 
     // Notez le slash ajouté ici entre API_URL et "teams/"
-    const response = await fetch(`${API_URL}/teams/${id}`, {
+    const response = await fetch(`${API_URL}teams/${id}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -93,7 +93,7 @@ export const getTeamsByCompany = async (companyId: string): Promise<Team[]> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/teams/company/${companyId}`, {
+    const response = await fetch(`${API_URL}teams/company/${companyId}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -126,7 +126,7 @@ export const createTeam = async (teamData: Partial<Team>): Promise<Team> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/teams`, {
+    const response = await fetch(`${API_URL}teams`, {
       method: "POST",
       headers: {
         ...headers,
@@ -162,7 +162,7 @@ export const updateTeam = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/teams/${id}`, {
+    const response = await fetch(`${API_URL}teams/${id}`, {
       method: "PUT",
       headers: {
         ...headers,
@@ -195,7 +195,7 @@ export const deleteTeam = async (id: string): Promise<void> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/teams/${id}`, {
+    const response = await fetch(`${API_URL}teams/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -228,7 +228,7 @@ export const addMemberToTeam = async (
     }
 
     const response = await fetch(
-      `${API_URL}/teams/${teamId}/members/${userId}`,
+      `${API_URL}teams/${teamId}/members/${userId}`,
       {
         method: "POST",
         headers: {
@@ -269,7 +269,7 @@ export const removeMemberFromTeam = async (
     }
 
     const response = await fetch(
-      `${API_URL}/teams/${teamId}/members/${userId}`,
+      `${API_URL}teams/${teamId}/members/${userId}`,
       {
         method: "DELETE",
         headers: {
@@ -309,7 +309,7 @@ export const setTeamLeader = async (
     }
 
     const response = await fetch(
-      `${API_URL}/teams/${teamId}/leader/${userId}`,
+      `${API_URL}teams/${teamId}/leader/${userId}`,
       {
         method: "PUT",
         headers: {
@@ -351,7 +351,7 @@ export const isUserTeamMember = async (
     }
 
     const response = await fetch(
-      `${API_URL}/teams/${teamId}/members/${userId}/check`,
+      `${API_URL}teams/${teamId}/members/${userId}/check`,
       {
         method: "GET",
         headers: {

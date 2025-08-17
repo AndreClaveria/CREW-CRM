@@ -97,7 +97,7 @@ const AdminDashboard: React.FC = () => {
           >
             💓
           </span>
-          Consulter l'état du système
+          Consulter l&apos;état du système
         </ActionButton>
       </div>
     </div>

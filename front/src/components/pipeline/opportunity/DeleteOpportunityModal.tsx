@@ -19,7 +19,7 @@ const DeleteOpportunityModal: React.FC<DeleteOpportunityModalProps> = ({
         <div style={styles.modalHeader}>
           <h3 style={styles.modalTitle}>Confirmer la suppression</h3>
           <p style={styles.modalText}>
-            Êtes-vous sûr de vouloir supprimer l'opportunité{" "}
+            Êtes-vous sûr de vouloir supprimer l’opportunité{" "}
             <strong>{opportunityName}</strong> ? Cette action ne peut pas être
             annulée.
           </p>

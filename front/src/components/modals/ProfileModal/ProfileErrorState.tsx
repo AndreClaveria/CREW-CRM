@@ -51,7 +51,7 @@ const ProfileErrorState: React.FC<ProfileErrorStateProps> = ({
         <div style={updatedMainContent}>
           <div style={profileModalStyles.errorStateBox}>
             <h3 style={profileModalStyles.errorStateTitle}>
-              Erreur d'identification
+              Erreur d’identification
             </h3>
             <p style={profileModalStyles.errorStateText}>
               Impossible de charger les informations de votre profil. Votre

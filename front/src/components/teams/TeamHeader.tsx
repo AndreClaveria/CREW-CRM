@@ -42,7 +42,7 @@ const TeamHeader: React.FC<TeamHeaderProps> = ({
           {teamName}
         </h1>
         <div style={styles.pageSubtitle}>
-          Gestion et informations de l'équipe
+          Gestion et informations de l’équipe
         </div>
       </div>
       <div style={styles.buttonContainer}>

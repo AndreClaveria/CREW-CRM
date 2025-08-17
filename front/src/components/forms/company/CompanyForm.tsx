@@ -48,7 +48,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ mode, companyId }) => {
           textAlign: "center",
         }}
       >
-        <p>Chargement des données de l'entreprise...</p>
+        <p>Chargement des données de l&apos;entreprise...</p>
       </div>
     );
   }

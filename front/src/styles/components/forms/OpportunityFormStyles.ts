@@ -64,12 +64,12 @@ export const opportunityFormStyles = {
   stepperSteps: {
     display: "flex",
     justifyContent: "space-between",
-    position: "relative" as "relative",
+    position: "relative" as const,
     marginBottom: "10px",
   },
 
   stepperLine: {
-    position: "absolute" as "absolute",
+    position: "absolute" as const,
     top: "50%",
     transform: "translateY(-50%)",
     height: "var(--border-big-width)",
@@ -80,9 +80,9 @@ export const opportunityFormStyles = {
 
   stepperStep: {
     display: "flex",
-    flexDirection: "column" as "column",
+    flexDirection: "column" as const,
     alignItems: "center",
-    position: "relative" as "relative",
+    position: "relative" as const,
     zIndex: 1,
   },
 
@@ -263,7 +263,7 @@ export const opportunityFormStyles = {
 
   emptyState: {
     padding: "var(--spacing-big)",
-    textAlign: "center" as "center",
+    textAlign: "center" as const,
     backgroundColor: "var(--color-neutral)",
     borderRadius: "var(--border-small-radius)",
     color: "var(--color-grey-600)",
@@ -342,7 +342,7 @@ export const opportunityFormStyles = {
   contactsContainer: {
     marginTop: "var(--spacing-normal)",
     maxHeight: "300px",
-    overflowY: "auto" as "auto",
+    overflowY: "auto" as const,
     padding: "4px",
   },
 
@@ -388,7 +388,7 @@ export const opportunityFormStyles = {
 
   noResults: {
     padding: "12px",
-    textAlign: "center" as "center",
+    textAlign: "center" as const,
     color: "var(--color-grey-600)",
     fontStyle: "italic",
   },
@@ -505,4 +505,4 @@ export const opportunityFormStyles = {
     fontSize: "var(--font-size-small-small)",
     marginTop: "8px",
   },
-};
+} as const;

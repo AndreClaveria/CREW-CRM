@@ -1,0 +1,858 @@
+openapi: 3.0.0
+info:
+  title: Monitoring Microservice API
+  version: 1.0.0
+  description: Documentation de l'API du microservice de monitoring et métriques pour le CRM CREW
+  contact:
+    name: Support
+    email: csupport@crewcrm.fr
+
+servers:
+  - url: http://localhost:3002
+    description: Serveur de développement
+  - url: https://api.crew.fr/monitoring
+    description: Serveur de production
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # Health Schemas
+    ServiceHealth:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nom du service
+        url:
+          type: string
+          description: URL du service
+        status:
+          type: string
+          enum: [healthy, unhealthy, unknown]
+          description: Statut de santé du service
+        responseTime:
+          type: number
+          description: Temps de réponse en millisecondes
+        lastCheck:
+          type: string
+          format: date-time
+          description: Date de la dernière vérification
+        error:
+          type: string
+          description: Message d'erreur si le service est indisponible
+      example:
+        name: "auth-service"
+        url: "http://localhost:3000/health"
+        status: "healthy"
+        responseTime: 120
+        lastCheck: "2025-08-17T10:30:00.000Z"
+
+    AllServicesHealthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            services:
+              type: array
+              items:
+                $ref: "#/components/schemas/ServiceHealth"
+            timestamp:
+              type: string
+              format: date-time
+      example:
+        success: true
+        data:
+          services:
+            - name: "auth-service"
+              status: "healthy"
+              responseTime: 120
+          timestamp: "2025-08-17T10:30:00.000Z"
+
+    TestNotificationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      example:
+        success: true
+        message: "Notification Discord de type information envoyée avec succès"
+
+    MonitoringToggleInput:
+      type: object
+      required:
+        - action
+      properties:
+        action:
+          type: string
+          enum: [start, stop]
+          description: Action à effectuer sur la surveillance
+        intervalMinutes:
+          type: number
+          minimum: 1
+          description: Intervalle de surveillance en minutes (requis pour start)
+      example:
+        action: "start"
+        intervalMinutes: 5
+
+    # Metrics Schemas
+    MetricsData:
+      type: object
+      properties:
+        requests:
+          type: object
+          properties:
+            total:
+              type: number
+            successful:
+              type: number
+            failed:
+              type: number
+            averageResponseTime:
+              type: number
+        mongodb:
+          type: object
+          properties:
+            totalOperations:
+              type: number
+            successfulOperations:
+              type: number
+            failedOperations:
+              type: number
+            averageResponseTime:
+              type: number
+        bandwidth:
+          type: object
+          properties:
+            totalBytesIn:
+              type: number
+            totalBytesOut:
+              type: number
+            averageRequestsPerSecond:
+              type: number
+        system:
+          type: object
+          properties:
+            uptime:
+              type: number
+            memoryUsage:
+              type: object
+            cpuUsage:
+              type: number
+      example:
+        requests:
+          total: 1250
+          successful: 1180
+          failed: 70
+          averageResponseTime: 145.5
+        mongodb:
+          totalOperations: 890
+          successfulOperations: 875
+          failedOperations: 15
+          averageResponseTime: 23.2
+        bandwidth:
+          totalBytesIn: 2048000
+          totalBytesOut: 4096000
+          averageRequestsPerSecond: 12.5
+
+    MetricsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          allOf:
+            - $ref: "#/components/schemas/MetricsData"
+            - type: object
+              properties:
+                timestamp:
+                  type: string
+                  format: date-time
+                period:
+                  type: string
+                  enum: [realtime, lastHour, last24Hours, custom]
+                timeRange:
+                  type: object
+                  properties:
+                    start:
+                      type: string
+                      format: date-time
+                    end:
+                      type: string
+                      format: date-time
+      example:
+        success: true
+        data:
+          requests:
+            total: 1250
+            successful: 1180
+            failed: 70
+            averageResponseTime: 145.5
+          timestamp: "2025-08-17T10:30:00.000Z"
+          period: "realtime"
+
+    RequestDistributionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            distribution:
+              type: object
+              additionalProperties:
+                type: number
+              description: Distribution des requêtes par endpoint
+            timestamp:
+              type: string
+              format: date-time
+            period:
+              type: string
+            timeRange:
+              type: object
+              properties:
+                start:
+                  type: string
+                  format: date-time
+                end:
+                  type: string
+                  format: date-time
+      example:
+        success: true
+        data:
+          distribution:
+            "/api/auth/login": 450
+            "/api/users": 320
+            "/api/payments/create-session": 180
+          timestamp: "2025-08-17T10:30:00.000Z"
+          period: "last24Hours"
+
+    StatusDistributionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            distribution:
+              type: object
+              additionalProperties:
+                type: number
+              description: Distribution des codes de statut HTTP
+            timestamp:
+              type: string
+              format: date-time
+            period:
+              type: string
+            timeRange:
+              type: object
+              properties:
+                start:
+                  type: string
+                  format: date-time
+                end:
+                  type: string
+                  format: date-time
+      example:
+        success: true
+        data:
+          distribution:
+            "200": 1180
+            "400": 45
+            "401": 15
+            "500": 10
+          timestamp: "2025-08-17T10:30:00.000Z"
+          period: "last24Hours"
+
+    EndpointPerformanceResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            performance:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  averageResponseTime:
+                    type: number
+                  requestCount:
+                    type: number
+                  errorRate:
+                    type: number
+            timestamp:
+              type: string
+              format: date-time
+            period:
+              type: string
+            timeRange:
+              type: object
+              properties:
+                start:
+                  type: string
+                  format: date-time
+                end:
+                  type: string
+                  format: date-time
+      example:
+        success: true
+        data:
+          performance:
+            "/api/auth/login":
+              averageResponseTime: 125.5
+              requestCount: 450
+              errorRate: 0.02
+            "/api/users":
+              averageResponseTime: 89.2
+              requestCount: 320
+              errorRate: 0.01
+          timestamp: "2025-08-17T10:30:00.000Z"
+          period: "last24Hours"
+
+    RecordRequestMetricInput:
+      type: object
+      required:
+        - method
+        - path
+        - statusCode
+        - duration
+      properties:
+        method:
+          type: string
+          enum: [GET, POST, PUT, DELETE, PATCH]
+          description: Méthode HTTP
+        path:
+          type: string
+          description: Chemin de l'endpoint
+        statusCode:
+          type: number
+          description: Code de statut HTTP
+        duration:
+          type: number
+          description: Durée de la requête en millisecondes
+        responseSize:
+          type: number
+          description: Taille de la réponse en octets
+        userAgent:
+          type: string
+          description: User-Agent du client
+        ip:
+          type: string
+          description: Adresse IP du client
+      example:
+        method: "POST"
+        path: "/api/auth/login"
+        statusCode: 200
+        duration: 145.5
+        responseSize: 1024
+        userAgent: "Mozilla/5.0..."
+        ip: "192.168.1.100"
+
+    RecordMongoMetricInput:
+      type: object
+      required:
+        - operation
+        - collection
+        - duration
+        - success
+      properties:
+        operation:
+          type: string
+          enum: [find, insert, update, delete, aggregate]
+          description: Type d'opération MongoDB
+        collection:
+          type: string
+          description: Nom de la collection
+        duration:
+          type: number
+          description: Durée de l'opération en millisecondes
+        success:
+          type: boolean
+          description: Succès de l'opération
+        error:
+          type: string
+          description: Message d'erreur si échec
+      example:
+        operation: "find"
+        collection: "users"
+        duration: 23.5
+        success: true
+
+    RecordBandwidthMetricInput:
+      type: object
+      required:
+        - bytesIn
+        - bytesOut
+        - requestsPerSecond
+      properties:
+        bytesIn:
+          type: number
+          description: Octets reçus
+        bytesOut:
+          type: number
+          description: Octets envoyés
+        requestsPerSecond:
+          type: number
+          description: Requêtes par seconde
+      example:
+        bytesIn: 2048
+        bytesOut: 4096
+        requestsPerSecond: 12.5
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      example:
+        success: true
+        message: "Opération réussie"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: string
+          description: Détails de l'erreur
+      example:
+        success: false
+        message: "Une erreur est survenue"
+        error: "Détails de l'erreur"
+
+security:
+  - bearerAuth: []
+
+paths:
+  # Health endpoints
+  /api/health/all:
+    get:
+      summary: Vérifie l'état de santé de tous les services
+      tags:
+        - Surveillance
+      security: []
+      responses:
+        "200":
+          description: État de santé de tous les services récupéré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllServicesHealthResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/health/service/{serviceName}:
+    get:
+      summary: Vérifie l'état de santé d'un service spécifique
+      tags:
+        - Surveillance
+      security: []
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Nom du service à vérifier
+          example: "auth-service"
+      responses:
+        "200":
+          description: État de santé du service récupéré avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/ServiceHealth"
+        "404":
+          description: Service non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/health/test-notification:
+    post:
+      summary: Envoie une notification Discord de test
+      tags:
+        - Surveillance
+      security: []
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [info, alert]
+            default: info
+          description: Type de notification à envoyer
+      responses:
+        "200":
+          description: Notification envoyée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TestNotificationResponse"
+        "500":
+          description: Erreur lors de l'envoi de la notification
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/health/monitoring:
+    post:
+      summary: Démarre ou arrête la surveillance des services
+      tags:
+        - Surveillance
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MonitoringToggleInput"
+      responses:
+        "200":
+          description: Surveillance modifiée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Action invalide
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # Metrics endpoints
+  /api/metrics/realtime:
+    get:
+      summary: Obtient les métriques en temps réel (dernières 5 minutes)
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Métriques temps réel récupérées avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetricsResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/metrics/last-hour:
+    get:
+      summary: Obtient les métriques de la dernière heure
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Métriques de la dernière heure récupérées avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetricsResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/metrics/last-24-hours:
+    get:
+      summary: Obtient les métriques des dernières 24 heures
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Métriques des dernières 24h récupérées avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetricsResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/metrics/custom:
+    get:
+      summary: Obtient les métriques pour une période personnalisée
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: Date de début (format ISO 8601)
+          example: "2025-08-16T00:00:00.000Z"
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: Date de fin (format ISO 8601)
+          example: "2025-08-17T23:59:59.999Z"
+      responses:
+        "200":
+          description: Métriques personnalisées récupérées avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetricsResponse"
+        "400":
+          description: Paramètres de date invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/metrics/distribution/requests:
+    get:
+      summary: Obtient la distribution des requêtes par endpoint
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [realtime, lastHour, last24Hours]
+            default: last24Hours
+          description: Période pour la distribution
+      responses:
+        "200":
+          description: Distribution des requêtes récupérée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestDistributionResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/metrics/distribution/status:
+    get:
+      summary: Obtient la distribution des codes de statut
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [realtime, lastHour, last24Hours]
+            default: last24Hours
+          description: Période pour la distribution
+      responses:
+        "200":
+          description: Distribution des statuts récupérée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusDistributionResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/metrics/performance/endpoints:
+    get:
+      summary: Obtient les performances par endpoint
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [realtime, lastHour, last24Hours]
+            default: last24Hours
+          description: Période pour l'analyse des performances
+      responses:
+        "200":
+          description: Performances par endpoint récupérées avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EndpointPerformanceResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/metrics/record/request:
+    post:
+      summary: Enregistre une métrique de requête
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecordRequestMetricInput"
+      responses:
+        "200":
+          description: Métrique de requête enregistrée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Données d'entrée invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/metrics/record/mongo:
+    post:
+      summary: Enregistre une métrique MongoDB
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecordMongoMetricInput"
+      responses:
+        "200":
+          description: Métrique MongoDB enregistrée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Données d'entrée invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/metrics/record/bandwidth:
+    post:
+      summary: Enregistre une métrique de bande passante
+      tags:
+        - Métriques
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecordBandwidthMetricInput"
+      responses:
+        "200":
+          description: Métrique de bande passante enregistrée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Données d'entrée invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

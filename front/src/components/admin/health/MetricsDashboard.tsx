@@ -318,7 +318,12 @@ const MetricsDashboard: React.FC = () => {
   const [period, setPeriod] = useState<MetricsPeriod>("last24Hours");
   const [isRealTime, setIsRealTime] = useState(false);
 
-  const metrics = isRealTime ? useRealTimeMetrics(5000) : useMetrics(period);
+  // Always call both hooks to maintain hook order
+  const realTimeMetrics = useRealTimeMetrics(5000);
+  const periodMetrics = useMetrics(period);
+
+  // Choose which metrics to use based on isRealTime
+  const metrics = isRealTime ? realTimeMetrics : periodMetrics;
 
   const requestDistribution = useRequestDistribution(period);
   const statusDistribution = useStatusDistribution(period);
@@ -341,7 +346,7 @@ const MetricsDashboard: React.FC = () => {
             Tableau de Bord des Métriques
           </h1>
           <p style={metricsDashboardStyles.subtitle as CSSProperties}>
-            Surveillance des performances de l'application
+            Surveillance des performances de l&apos;application
           </p>
         </div>
 

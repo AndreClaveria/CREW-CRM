@@ -32,7 +32,9 @@ export interface UseChatbotActions {
   setError: (error: string | null) => void;
 }
 
-export interface UseChatbotReturn extends UseChatbotState, UseChatbotActions {}
+export interface UseChatbotReturn extends UseChatbotState, UseChatbotActions {
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
+}
 
 export const useChatbot = (): UseChatbotReturn => {
   const router = useRouter();

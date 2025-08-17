@@ -1,7 +1,7 @@
 // services/client.service.ts
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL_CLIENT || "http://localhost:3001/api";
+  process.env.NEXT_PUBLIC_API_URL_CLIENT || "http://localhost:3001/api/";
 
 export interface Client {
   _id: string;
@@ -92,7 +92,7 @@ export const getAllClients = async (): Promise<Client[]> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/clients`, {
+    const response = await fetch(`${API_URL}clients`, {
       method: "GET",
       headers: {
         ...headers,
@@ -125,7 +125,7 @@ export const getClientById = async (id: string): Promise<Client> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/clients/${id}`, {
+    const response = await fetch(`${API_URL}clients/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -176,7 +176,7 @@ export const getClientsByCompany = async (
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/clients/company/${companyId}`, {
+    const response = await fetch(`${API_URL}clients/company/${companyId}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -210,7 +210,7 @@ export const getClientsByTeam = async (teamId: string): Promise<Client[]> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/clients/team/${teamId}`, {
+    const response = await fetch(`${API_URL}clients/team/${teamId}`, {
       method: "GET",
       headers: {
         ...headers,
@@ -309,7 +309,7 @@ export const updateClient = async (
 
     console.log(`🔄 Mise à jour du client ${id} avec:`, clientData);
 
-    const response = await fetch(`${API_URL}/clients/${id}`, {
+    const response = await fetch(`${API_URL}clients/${id}`, {
       method: "PUT",
       headers: {
         ...headers,
@@ -359,7 +359,7 @@ export const deleteClient = async (id: string): Promise<void> => {
       throw new Error("Non authentifié");
     }
 
-    const response = await fetch(`${API_URL}/clients/${id}`, {
+    const response = await fetch(`${API_URL}clients/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

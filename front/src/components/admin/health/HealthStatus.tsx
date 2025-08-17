@@ -68,7 +68,7 @@ const HealthStatus: React.FC = () => {
 
       <div style={healthStyles.statusOverview as CSSProperties}>
         <div style={healthStyles.overviewCard as CSSProperties}>
-          <h2>Vue d'ensemble</h2>
+          <h2>Vue d&apos;ensemble</h2>
           <p>
             {stats.isAllOperational
               ? "✅ Tous les services sont opérationnels"

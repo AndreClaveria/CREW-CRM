@@ -127,7 +127,7 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
       {/* Indicateur "Bonne Poire" */}
       {typeof client.goodForCustomer === "number" && (
         <div style={styles.scoreContainer}>
-          <div style={styles.scoreLabel}>Indicateur "Bonne Poire"</div>
+          <div style={styles.scoreLabel}>Indicateur Bonne Poire</div>
           <div
             style={{
               ...styles.scoreValue,

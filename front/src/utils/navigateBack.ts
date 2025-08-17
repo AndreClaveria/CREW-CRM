@@ -1,6 +1,6 @@
 // src/utils/navigation.ts
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // Utiliser un objet de session ou localStorage pour stocker l'historique de navigation
 const HISTORY_KEY = "navigation_history";
@@ -26,22 +26,21 @@ export const useNavigation = () => {
   };
 
   // Ajouter une page à l'historique
-  const addToHistory = (path: string) => {
+  const addToHistory = useCallback((path: string) => {
     const history = getHistory();
 
     // Éviter les doublons consécutifs
     if (history.length === 0 || history[history.length - 1] !== path) {
       // Limiter la taille de l'historique (facultatif)
       if (history.length >= 20) {
-        const removed = history.shift(); // Enlever le plus ancien
+        history.shift(); // Enlever le plus ancien
       }
 
       history.push(path);
 
       saveHistory(history);
-    } else {
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -61,23 +60,24 @@ export const useNavigation = () => {
     // Intercepter les navigations programmatiques
     const originalPush = router.push;
 
-    // @ts-ignore - Pour surcharger la méthode
-    router.push = function (url: string, options?: any) {
+    // Override router.push to track navigation history
+    const newPush = function (url: string, options?: any) {
       // Ajouter à l'historique avant la navigation
       setTimeout(() => {
         addToHistory(url);
       }, 0);
 
-      return originalPush.apply(this, [url, options]);
+      return originalPush.apply(router, [url, options]);
     };
+
+    router.push = newPush;
 
     return () => {
       // Restaurer la méthode originale à la destruction du composant
 
-      // @ts-ignore
       router.push = originalPush;
     };
-  }, [router, isInitialized]);
+  }, [router, isInitialized, addToHistory]);
 
   // Fonction pour revenir à la page précédente
   const navigateBack = () => {
@@ -86,7 +86,7 @@ export const useNavigation = () => {
     // S'il y a au moins deux pages dans l'historique
     if (history.length >= 2) {
       // La page actuelle est la dernière de l'historique
-      const currentPath = history.pop();
+      history.pop();
       // La page précédente est maintenant la dernière
       const previousPath = history[history.length - 1];
 

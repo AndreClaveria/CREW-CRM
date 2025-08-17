@@ -26,10 +26,10 @@ const CompanyHeader: React.FC<CompanyHeaderProps> = ({
       <div>
         <h1 style={styles.pageTitle}>
           <FaArrowLeft style={{ cursor: "pointer" }} onClick={navigateBack} />
-          Détails de l'entreprise
+          Détails de l&apos;entreprise
         </h1>
         <div style={styles.pageSubtitle}>
-          Gestion et informations de l'entreprise
+          Gestion et informations de l&apos;entreprise
         </div>
       </div>
       <div style={styles.buttonContainer}>

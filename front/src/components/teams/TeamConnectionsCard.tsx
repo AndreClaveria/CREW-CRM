@@ -52,7 +52,7 @@ const TeamConnectionsCard: React.FC<TeamConnectionsCardProps> = ({
         >
           <FaCrown style={{ ...styles.linkIcon, color: "#ffc107" }} />
           <div style={styles.linkInfo}>
-            <div style={styles.linkTitle}>Responsable d'équipe</div>
+            <div style={styles.linkTitle}>Responsable d’équipe</div>
             <div style={styles.linkSubtitle}>
               {teamLeader.firstName} {teamLeader.lastName}
             </div>

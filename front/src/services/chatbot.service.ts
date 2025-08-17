@@ -63,7 +63,7 @@ export interface ContextualHelpResponse {
 
 // Configuration API
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL_IA || "http://localhost:5000";
+  process.env.NEXT_PUBLIC_API_URL_IA || "http://localhost:3005/api/";
 const CHATBOT_ENDPOINTS = {
   chat: `${API_BASE_URL}chatbot/chat`,
   help: `${API_BASE_URL}chatbot/help`,
