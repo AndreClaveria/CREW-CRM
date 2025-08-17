@@ -7,6 +7,7 @@ on:
     branches: [develop, prod]
 
 jobs:
+  # Test basique de chaque service
   test-services:
     name: Test ${{ matrix.service }}
     runs-on: ubuntu-latest
@@ -30,12 +31,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: "${{ matrix.service }}/package-lock.json"
 
       - name: Install dependencies
         working-directory: ./${{ matrix.service }}
-        run: npm ci
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "📦 Using npm ci (package-lock.json found)"
+            npm ci
+          else
+            echo "📦 Using npm install (no package-lock.json)"
+            npm install
+          fi
 
       - name: Run linting (if exists)
         working-directory: ./${{ matrix.service }}
