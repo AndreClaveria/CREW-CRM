@@ -670,7 +670,8 @@ jobs:
               PATCH=$((PATCH + 1))
               echo "🔧 Incrementing PATCH: $MAJOR.$MINOR.$PATCH"
               ;;
-          esa
+          esac
+
           # Générer la version finale selon la branche
           SHORT_SHA=$(git rev-parse --short HEAD)
 
