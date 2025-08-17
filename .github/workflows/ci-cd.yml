@@ -330,9 +330,9 @@ jobs:
           SIZE=$(docker images crew-crm-${{ matrix.service }}:test --format "{{.Size}}")
           echo "📦 Image size for ${{ matrix.service }}: $SIZE"
 
-  # Test d'intégration complet avec Docker Compose
+  # Test d'intégration complet avec Docker Compose + Performance légère
   integration-test:
-    name: Docker Compose Integration Test
+    name: Integration & Performance Testing
     runs-on: ubuntu-latest
     needs: build-test
     if: github.event_name == 'push'
@@ -461,89 +461,70 @@ jobs:
 
           echo "✅ All health endpoints responding"
 
+      # NOUVEAU : Tests de performance légers
+      - name: Quick Performance Check
+        run: |
+          echo "⚡ Running lightweight performance checks..."
+
+          # Test du temps de réponse de chaque service
+          services=(
+            "authentication-service:3002"
+            "bdd-service:3001"
+            "notification-mail-sms-service:3003"
+            "metrics-service:3004"
+            "service-ia:3005"
+            "payment-service:3006"
+          )
+
+          for service in "${services[@]}"; do
+            name=$(echo $service | cut -d':' -f1)
+            port=$(echo $service | cut -d':' -f2)
+            
+            echo "⏱️ Testing response time for $name..."
+            
+            response_time=$(curl -w "%{time_total}" -o /dev/null -s http://localhost:$port/health)
+            
+            echo "📊 $name response time: ${response_time}s"
+            
+            # Seuil : plus de 2 secondes = problème
+            if (( $(echo "$response_time > 2.0" | bc -l) )); then
+              echo "⚠️ Performance issue detected for $name: ${response_time}s (> 2.0s)"
+              exit 1
+            else
+              echo "✅ $name performance OK: ${response_time}s"
+            fi
+          done
+
+          echo "🎯 All services performance check passed!"
+
+      # NOUVEAU : Test de charge léger (optionnel, seulement sur develop)
+      - name: Light Load Test (develop only)
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          echo "🔄 Running light load test on authentication service..."
+
+          # Test simple avec curl en parallèle
+          for i in {1..10}; do
+            curl -s http://localhost:3002/health > /dev/null &
+          done
+          wait
+
+          # Vérifier que le service répond toujours
+          response_time=$(curl -w "%{time_total}" -o /dev/null -s http://localhost:3002/health)
+
+          if (( $(echo "$response_time > 3.0" | bc -l) )); then
+            echo "⚠️ Service degraded under light load: ${response_time}s"
+            exit 1
+          else
+            echo "✅ Service handles light load well: ${response_time}s"
+          fi
+
       - name: Cleanup test environment
         if: always()
         run: |
           echo "🧹 Cleaning up test environment..."
           docker compose down -v
           docker system prune -f
-
-  # Test de performance (seulement sur develop)
-  performance-test:
-    name: Performance & Load Testing
-    runs-on: ubuntu-latest
-    needs: integration-test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup performance testing tools
-        run: |
-          npm install -g artillery@latest
-
-      - name: Start services for performance testing
-        run: |
-          echo "🚀 Starting services for performance test..."
-          cat > .env.perf << EOF
-          NODE_ENV=production
-          MONGO_URI=mongodb://mongo:27017/crew-crm-perf
-          REDIS_PASSWORD=perf-redis-password
-          JWT_SECRET=perf-jwt-secret-key
-          EOF
-
-          docker compose --env-file .env.perf up -d
-          sleep 120
-
-      - name: Create performance test scenarios
-        run: |
-          mkdir -p performance-tests
-
-          # Test de charge pour l'API d'authentification
-          cat > performance-tests/auth-load-test.yml << EOF
-          config:
-            target: 'http://localhost:3002'
-            phases:
-              - duration: 60
-                arrivalRate: 10
-                name: "Warm up"
-              - duration: 120
-                arrivalRate: 30
-                name: "Load test"
-          scenarios:
-            - name: "Health check load"
-              requests:
-                - get:
-                    url: "/health"
-          EOF
-
-      - name: Run performance tests
-        run: |
-          echo "⚡ Running performance tests..."
-          artillery run performance-tests/auth-load-test.yml --output auth-report.json
-
-          echo "📊 Performance test completed"
-          artillery report auth-report.json || echo "Report generation failed"
-
-      - name: Performance threshold check
-        run: |
-          echo "🎯 Checking performance thresholds..."
-
-          # Test basique de temps de réponse
-          response_time=$(curl -w "%{time_total}" -o /dev/null -s http://localhost:3002/health)
-          echo "⏱️ Auth service response time: ${response_time}s"
-
-          if (( $(echo "$response_time > 1.0" | bc -l) )); then
-            echo "⚠️ Auth service response time too slow: ${response_time}s"
-          else
-            echo "✅ Auth service response time OK: ${response_time}s"
-          fi
-
-      - name: Cleanup
-        if: always()
-        run: docker compose down -v
-
   # Tests End-to-End (seulement sur les PR vers prod)
   e2e-tests:
     name: End-to-End Tests
