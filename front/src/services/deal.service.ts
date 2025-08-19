@@ -73,6 +73,29 @@ export const getDealsByCompany = async (companyId: string): Promise<Deal[]> => {
   return Array.isArray(data) ? data : [];
 };
 
+export const getDealById = async (id: string): Promise<Deal> => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("Non authentifié");
+
+  const response = await fetch(`${API_URL}deals/${id}`, {
+    method: "GET",
+    headers: { ...headers, Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const errBody = await response.text();
+    throw new Error(errBody || "Erreur lors de la récupération du deal");
+  }
+
+  const data = await ensureJsonResponse(response);
+  if (data && typeof data === "object") {
+    if ("data" in data && data.data) return data.data;
+    if ("_id" in data) return data as Deal;
+    if ("deal" in data) return data.deal as Deal;
+  }
+  return data as Deal;
+};
+
 export const createDeal = async (dealData: Partial<Deal>): Promise<Deal> => {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("Non authentifié");

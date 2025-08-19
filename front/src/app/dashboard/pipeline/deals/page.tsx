@@ -97,14 +97,27 @@ export default function DealsPage() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: "50px", marginBottom: "8px" }}>Deals</h1>
+          <h1
+            style={{
+              fontSize: "50px",
+              marginBottom: "8px",
+              fontFamily: "var(--font-first)",
+            }}
+          >
+            Deals
+          </h1>
           {company && (
-            <p style={{ color: "#666" }}>
+            <p
+              style={{
+                color: "var(--color-grey-600)",
+                fontFamily: "var(--font-second-regular)",
+              }}
+            >
               Entreprise: <strong>{company.name}</strong>
             </p>
           )}
         </div>
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div style={{ display: "flex", gap: "var(--spacing-small)" }}>
           <ActionButton
             onClick={() => router.push("/dashboard/pipeline/deals/add")}
             variant="primary"
@@ -115,8 +128,8 @@ export default function DealsPage() {
           <div
             style={{
               display: "flex",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
+              border: `var(--border-width) solid var(--color-grey-400)`,
+              borderRadius: "var(--border-small-radius)",
               overflow: "hidden",
             }}
           >
@@ -125,10 +138,17 @@ export default function DealsPage() {
               style={{
                 padding: "8px 12px",
                 background:
-                  viewMode === "kanban" ? "#3498DB" : "var(--color-neutral)",
-                color: viewMode === "kanban" ? "white" : "#3498DB",
+                  viewMode === "kanban"
+                    ? "var(--color-blue)"
+                    : "var(--color-neutral)",
+                color:
+                  viewMode === "kanban"
+                    ? "var(--color-white)"
+                    : "var(--color-blue)",
                 border: "none",
                 cursor: "pointer",
+                fontFamily: "var(--font-second-regular)",
+                fontSize: "var(--font-size-small)",
               }}
             >
               Vue Kanban
@@ -138,10 +158,17 @@ export default function DealsPage() {
               style={{
                 padding: "8px 12px",
                 background:
-                  viewMode === "list" ? "#3498DB" : "var(--color-neutral)",
-                color: viewMode === "list" ? "white" : "#3498DB",
+                  viewMode === "list"
+                    ? "var(--color-blue)"
+                    : "var(--color-neutral)",
+                color:
+                  viewMode === "list"
+                    ? "var(--color-white)"
+                    : "var(--color-blue)",
                 border: "none",
                 cursor: "pointer",
+                fontFamily: "var(--font-second-regular)",
+                fontSize: "var(--font-size-small)",
               }}
             >
               Vue Liste
@@ -162,7 +189,7 @@ export default function DealsPage() {
       ) : (
         <div style={styles.noDealsMessage}>
           <FaBriefcase style={styles.noDealsIcon} />
-          <p>Aucun deal disponible pour le moment</p>
+          <p style={styles.noDealsText}>Aucun deal disponible pour le moment</p>
           <ActionButton
             onClick={() => router.push("/dashboard/pipeline/deals/add")}
             variant="primary"
@@ -189,15 +216,21 @@ const styles = {
     display: "flex",
     flexDirection: "column" as const,
     alignItems: "center",
-    padding: "40px",
-    backgroundColor: "#f5f5f5",
-    borderRadius: "8px",
-    color: "#666",
-    gap: "12px",
+    padding: "var(--spacing-big)",
+    backgroundColor: "var(--color-grey-100)",
+    borderRadius: "var(--border-radius)",
+    color: "var(--color-grey-600)",
+    gap: "var(--spacing-small)",
   },
   noDealsIcon: {
     fontSize: "2rem",
-    color: "#999",
+    color: "var(--color-grey-500)",
     marginBottom: "15px",
+  },
+  noDealsText: {
+    fontFamily: "var(--font-second-regular)",
+    fontSize: "var(--font-size-normal)",
+    color: "var(--color-grey-600)",
+    margin: 0,
   },
 };

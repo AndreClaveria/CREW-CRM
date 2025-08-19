@@ -46,6 +46,9 @@ const DealBoard: React.FC<DealBoardProps> = ({
     const dealId = e.dataTransfer.getData("dealId");
     if (dealId) onStatusChange(dealId, status);
   };
+  const handleDealClick = (dealId: string) => {
+    router.push(`/dashboard/pipeline/deals/edit/${dealId}`);
+  };
 
   if (isLoading)
     return <div style={styles.loadingContainer}>Chargement des deals...</div>;
@@ -73,7 +76,12 @@ const DealBoard: React.FC<DealBoardProps> = ({
               ) || { color: "#999", label: "Non défini" };
               return (
                 <tr key={deal._id} style={styles.tableRow}>
-                  <td style={styles.tableCell}>{deal.title}</td>
+                  <td
+                    style={styles.tableCellLink}
+                    onClick={() => handleDealClick(deal._id)}
+                  >
+                    {deal.title}
+                  </td>
                   <td style={styles.tableCell}>
                     <span
                       style={{
@@ -100,7 +108,12 @@ const DealBoard: React.FC<DealBoardProps> = ({
                   <td style={styles.tableCellCenter}>
                     {onDeleteClick && (
                       <ActionButton
-                        onClick={() => handleDeleteClick(deal)}
+                        onClick={() => {
+                          // Empêcher la propagation de l'événement
+                          setTimeout(() => {
+                            handleDeleteClick(deal);
+                          }, 0);
+                        }}
                         variant="danger"
                         size="small"
                       >
@@ -158,6 +171,7 @@ const DealBoard: React.FC<DealBoardProps> = ({
                     e.currentTarget.style.boxShadow =
                       "0 2px 4px rgba(0,0,0,0.1)";
                   }}
+                  onClick={() => handleDealClick(deal._id)}
                 >
                   <div
                     style={{
@@ -169,7 +183,12 @@ const DealBoard: React.FC<DealBoardProps> = ({
                     <h4 style={styles.cardTitle}>{deal.title}</h4>
                     {onDeleteClick && (
                       <ActionButton
-                        onClick={() => handleDeleteClick(deal)}
+                        onClick={() => {
+                          // Empêcher la propagation de l'événement
+                          setTimeout(() => {
+                            handleDeleteClick(deal);
+                          }, 0);
+                        }}
                         variant="danger"
                         size="small"
                       >

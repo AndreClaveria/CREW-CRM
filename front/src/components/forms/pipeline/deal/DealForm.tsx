@@ -302,10 +302,10 @@ const DealForm: React.FC<DealFormProps> = ({
       ) : (
         <ActionButton
           onClick={() => router.push(getBackUrl())}
-          variant="secondary"
+          variant="primary"
           size="medium"
         >
-          Annuler
+          Retour aux deals
         </ActionButton>
       )}
 
@@ -344,7 +344,7 @@ const DealForm: React.FC<DealFormProps> = ({
         </div>
         <ActionButton
           onClick={() => router.push(getBackUrl())}
-          variant="secondary"
+          variant="primary"
           size="large"
         >
           Retour aux deals

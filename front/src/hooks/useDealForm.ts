@@ -4,6 +4,7 @@ import {
   DealStatus,
   createDeal,
   updateDeal,
+  getDealById,
 } from "@/services/deal.service";
 
 export interface DealFormData {
@@ -62,6 +63,7 @@ export const useDealForm = ({
     company: companyId,
     client: clientId,
     isActive: true,
+    notes: "",
   });
 
   const [dataLoading, setDataLoading] = useState(false);
@@ -86,8 +88,31 @@ export const useDealForm = ({
   );
 
   useEffect(() => {
-    // Placeholder si on implémente le chargement d'un deal existant (mode edit)
-  }, [dealId]);
+    const loadDeal = async () => {
+      if (mode !== "edit" || !dealId) return;
+      try {
+        setDataLoading(true);
+        const d = await getDealById(dealId);
+        setFormData({
+          title: d.title,
+          description: d.description,
+          value: d.value,
+          status: d.status,
+          probability: d.probability ?? 20,
+          expectedClosingDate: d.expectedClosingDate,
+          company: d.company,
+          client: d.client,
+          notes: d.notes,
+          isActive: d.isActive,
+        });
+      } catch (e: any) {
+        setError(e.message || "Impossible de charger le deal");
+      } finally {
+        setDataLoading(false);
+      }
+    };
+    loadDeal();
+  }, [mode, dealId]);
 
   const handleChange: UseDealFormReturn["handleChange"] = (e) => {
     const { name, value } = e.target;
