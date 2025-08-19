@@ -116,9 +116,43 @@ export interface IOpportunity {
 
 // Type pour la création d'une nouvelle Opportunity (sans _id)
 export type IOpportunityInput = Omit<IOpportunity, "_id"> & { _id?: string };
-
-// Interface pour le modèle Company (existant)
-export interface ICompany {
+ 
+ // Interface pour le modèle Deal
+ export interface IDeal {
+   _id: string;
+   title: string;
+   description?: string;
+   value: number;
+   status:
+     | "prospection"
+     | "qualification"
+     | "proposition"
+     | "negociation"
+     | "signature"
+     | "perdu"
+     | "gagne";
+   probability: number;
+   expectedClosingDate?: Date;
+   company: string;
+   client: string;
+   contacts?: string[];
+   team?: string;
+   assignedTo?: string;
+   notes?: string;
+   products?: {
+     name: string;
+     price: number;
+     quantity: number;
+   }[];
+   isActive?: boolean;
+   createdAt?: Date;
+   updatedAt?: Date;
+ }
+ 
+ export type IDealInput = Omit<IDeal, "_id"> & { _id?: string };
+ 
+ // Interface pour le modèle Company (existant)
+ export interface ICompany {
   _id: string; // Non optionnel pour une entité existante
   name: string;
   description?: string;
