@@ -146,3 +146,31 @@ export const deleteDeal = async (id: string): Promise<void> => {
     throw new Error(errBody || "Erreur lors de la suppression du deal");
   }
 };
+
+/**
+ * Récupère tous les deals
+ */
+export const getAllDeals = async (): Promise<Deal[]> => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Non authentifié");
+
+    const response = await fetch(`${API_URL}deals`, {
+      method: "GET",
+      headers: { ...headers, Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) {
+      const errBody = await response.text();
+      throw new Error(errBody || "Erreur lors du chargement des deals");
+    }
+
+    const data = await ensureJsonResponse(response);
+    if (data && typeof data === "object" && Array.isArray(data.data))
+      return data.data;
+    return Array.isArray(data) ? data : [];
+  } catch (error: any) {
+    console.error("getAllDeals error:", error);
+    throw error;
+  }
+};

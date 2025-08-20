@@ -1,12 +1,13 @@
 export const dashboardStyles = {
   container: {
     display: "flex",
+    flexDirection: "column",
     width: "100%",
     margin: 0,
     padding: 0,
     position: "relative",
-    minHeight: "100vh", // Utiliser minHeight au lieu de height fixe
-    overflowY: "visible", // Permettre le défilement vertical
+    minHeight: "100vh",
+    overflowY: "visible",
   },
   sidebar: {
     width: "80px",
@@ -219,5 +220,484 @@ export const dashboardStyles = {
     height: "auto",
     minHeight: "100vh",
     boxSizing: "border-box" as const,
+  },
+  // Nouveaux styles pour les dashboards
+  dashboardGrid: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--spacing-big)",
+    width: "100%",
+  },
+  statsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "var(--spacing-normal)",
+    marginBottom: "var(--spacing-big)",
+  },
+  statCard: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    textAlign: "center",
+    border: "1px solid var(--color-grey-200)",
+  },
+  statNumber: {
+    fontSize: "2.5rem",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+    margin: "0 0 0.5rem 0",
+  },
+  statLabel: {
+    fontSize: "var(--font-size-normal)",
+    color: "var(--color-text-secondary)",
+    margin: 0,
+    fontWeight: "var(--font-weight-medium)",
+  },
+  sectionTitle: {
+    fontSize: "var(--font-size-big)",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+    marginBottom: "var(--spacing-normal)",
+    borderBottom: "2px solid var(--color-grey-200)",
+    paddingBottom: "0.5rem",
+  },
+  // Styles pour l'activité récente
+  activitySection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+  },
+  activityList: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "var(--spacing-normal)",
+  },
+  activityItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-normal)",
+    padding: "var(--spacing-normal)",
+    backgroundColor: "var(--color-grey-50)",
+    borderRadius: "var(--border-small-radius)",
+  },
+  activityIcon: {
+    fontSize: "1.5rem",
+    minWidth: "2rem",
+  },
+  activityContent: {
+    flex: 1,
+  },
+  activityMessage: {
+    margin: "0 0 0.25rem 0",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text)",
+  },
+  activityTime: {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-grey-500)",
+  },
+  // Styles pour les actions
+  actionsSection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+  },
+  actionList: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "var(--spacing-normal)",
+  },
+  actionItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-normal)",
+    padding: "var(--spacing-normal)",
+    backgroundColor: "var(--color-grey-50)",
+    borderRadius: "var(--border-small-radius)",
+    justifyContent: "space-between",
+  },
+  actionPriority: {
+    fontSize: "1.25rem",
+  },
+  actionDate: {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-grey-500)",
+    fontWeight: "var(--font-weight-medium)",
+  },
+  // Styles pour le dashboard manager
+  teamSection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+  },
+  teamTable: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "0.5rem",
+  },
+  tableHeader: {
+    display: "grid",
+    gridTemplateColumns: "2fr 1fr 1fr 1fr",
+    gap: "var(--spacing-normal)",
+    padding: "var(--spacing-normal)",
+    backgroundColor: "var(--color-grey-100)",
+    borderRadius: "var(--border-small-radius)",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+  },
+  tableRow: {
+    display: "grid",
+    gridTemplateColumns: "2fr 1fr 1fr 1fr",
+    gap: "var(--spacing-normal)",
+    padding: "var(--spacing-normal)",
+    borderBottom: "1px solid var(--color-grey-200)",
+    alignItems: "center",
+  },
+  memberName: {
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text)",
+  },
+  statusBadge: {
+    padding: "0.25rem 0.75rem",
+    borderRadius: "var(--border-small-radius)",
+    color: "var(--color-white)",
+    fontSize: "var(--font-size-small)",
+    fontWeight: "var(--font-weight-medium)",
+    textTransform: "capitalize" as const,
+  },
+  // Styles pour le pipeline
+  pipelineSection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+  },
+  pipelineGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+    gap: "var(--spacing-normal)",
+  },
+  pipelineCard: {
+    padding: "var(--spacing-normal)",
+    backgroundColor: "var(--color-grey-50)",
+    borderRadius: "var(--border-small-radius)",
+    border: "1px solid var(--color-grey-200)",
+  },
+  pipelineStage: {
+    margin: "0 0 var(--spacing-normal) 0",
+    fontSize: "var(--font-size-normal)",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+    textAlign: "center",
+  },
+  pipelineStats: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "0.5rem",
+  },
+  pipelineStat: {
+    display: "flex",
+    flexDirection: "column" as const,
+    alignItems: "center",
+    textAlign: "center",
+  },
+  pipelineNumber: {
+    fontSize: "var(--font-size-big)",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+  },
+  pipelineLabel: {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-text-secondary)",
+  },
+  // Styles pour les alertes
+  alertsSection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+  },
+  alertsList: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "var(--spacing-normal)",
+  },
+  alertItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-normal)",
+    padding: "var(--spacing-normal)",
+    backgroundColor: "var(--color-grey-50)",
+    borderRadius: "var(--border-small-radius)",
+    borderLeft: "4px solid var(--color-orange)",
+  },
+  alertIcon: {
+    fontSize: "1.25rem",
+  },
+  // Styles pour l'indicateur de rôle
+  roleIndicator: {
+    marginTop: "var(--spacing-normal)",
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  roleBadge: {
+    backgroundColor: "var(--color-main)",
+    color: "white",
+    padding: "0.5rem 1rem",
+    borderRadius: "var(--border-small-radius)",
+    fontSize: "var(--font-size-small)",
+    fontWeight: "var(--font-weight-medium)",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "0.5rem",
+  },
+  // Styles pour les graphiques
+  chartSection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+  },
+  chartContainer: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "var(--spacing-normal)",
+  },
+  chartItem: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "0.5rem",
+  },
+  chartLabel: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    fontSize: "var(--font-size-small)",
+    fontWeight: "var(--font-weight-medium)",
+  },
+  chartValue: {
+    color: "var(--color-text)",
+    fontWeight: "var(--font-weight-bold)",
+  },
+  chartBar: {
+    height: "8px",
+    backgroundColor: "var(--color-grey-200)",
+    borderRadius: "4px",
+    overflow: "hidden",
+  },
+  chartBarFill: {
+    height: "100%",
+    borderRadius: "4px",
+    transition: "width 0.3s ease",
+  },
+  // Style pour la grille des graphiques
+  chartsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+    gap: "var(--spacing-big)",
+  },
+  // Styles pour le sélecteur de rôle
+  roleSelector: {
+    display: "flex",
+    gap: "var(--spacing-normal)",
+    marginTop: "var(--spacing-normal)",
+    flexWrap: "wrap",
+  },
+  roleButton: {
+    padding: "0.75rem 1.5rem",
+    borderRadius: "var(--border-small-radius)",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "var(--font-size-normal)",
+    fontWeight: "var(--font-weight-medium)",
+    transition: "all 0.2s ease",
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+  },
+  // Nouveaux styles pour le design cohérent
+  statsSection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+    marginBottom: "var(--spacing-big)",
+  },
+
+  chartsSection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+    marginBottom: "var(--spacing-big)",
+  },
+
+  dealsSection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+    marginBottom: "var(--spacing-big)",
+  },
+
+  financialSection: {
+    backgroundColor: "var(--color-white)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-radius)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    border: "1px solid var(--color-grey-200)",
+    marginBottom: "var(--spacing-big)",
+  },
+
+  dealsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "var(--spacing-normal)",
+  },
+
+  dealCard: {
+    backgroundColor: "var(--color-grey-50)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-small-radius)",
+    border: "1px solid var(--color-grey-200)",
+    textAlign: "center",
+  },
+
+  dealValue: {
+    fontSize: "2rem",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+    margin: "0 0 0.5rem 0",
+  },
+
+  dealLabel: {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-text-secondary)",
+    margin: 0,
+  },
+
+  financialGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "var(--spacing-normal)",
+  },
+
+  financialCard: {
+    backgroundColor: "var(--color-grey-50)",
+    padding: "var(--spacing-big)",
+    borderRadius: "var(--border-small-radius)",
+    border: "1px solid var(--color-grey-200)",
+    textAlign: "center",
+  },
+
+  financialValue: {
+    fontSize: "2rem",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+    margin: "0 0 0.5rem 0",
+  },
+
+  financialLabel: {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-text-secondary)",
+    margin: 0,
+  },
+
+  activityTable: {
+    backgroundColor: "var(--color-white)",
+    borderRadius: "var(--border-small-radius)",
+    border: "1px solid var(--color-grey-200)",
+    overflow: "hidden",
+  },
+
+  actionsTable: {
+    backgroundColor: "var(--color-white)",
+    borderRadius: "var(--border-small-radius)",
+    border: "1px solid var(--color-grey-200)",
+    overflow: "hidden",
+  },
+
+  alertsTable: {
+    backgroundColor: "var(--color-white)",
+    borderRadius: "var(--border-small-radius)",
+    border: "1px solid var(--color-grey-200)",
+    overflow: "hidden",
+  },
+
+  tableHeader: {
+    display: "grid",
+    gridTemplateColumns: "1fr 2fr 1fr",
+    gap: "var(--spacing-normal)",
+    padding: "var(--spacing-normal)",
+    backgroundColor: "var(--color-grey-100)",
+    borderBottom: "1px solid var(--color-grey-200)",
+    fontWeight: "var(--font-weight-bold)",
+    color: "var(--color-text)",
+  },
+
+  tableRow: {
+    display: "grid",
+    gridTemplateColumns: "1fr 2fr 1fr",
+    gap: "var(--spacing-normal)",
+    padding: "var(--spacing-normal)",
+    borderBottom: "1px solid var(--color-grey-100)",
+    alignItems: "center",
+  },
+
+  activityType: {
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text)",
+  },
+
+  activityMessage: {
+    color: "var(--color-text)",
+  },
+
+  activityTime: {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-text-secondary)",
+    textAlign: "right",
+  },
+
+  priorityBadge: {
+    padding: "0.25rem 0.75rem",
+    borderRadius: "var(--border-small-radius)",
+    fontSize: "var(--font-size-small)",
+    fontWeight: "var(--font-weight-medium)",
+    display: "inline-block",
+  },
+
+  actionText: {
+    color: "var(--color-text)",
+  },
+
+  actionDate: {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-text-secondary)",
+    textAlign: "right",
+  },
+
+  alertType: {
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text)",
+  },
+
+  alertDetails: {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-text-secondary)",
+    textAlign: "right",
   },
 } as const;
