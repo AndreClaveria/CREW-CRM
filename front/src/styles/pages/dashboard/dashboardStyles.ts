@@ -637,36 +637,17 @@ export const dashboardStyles = {
     overflow: "hidden",
   },
 
-  tableHeader: {
-    display: "grid",
-    gridTemplateColumns: "1fr 2fr 1fr",
-    gap: "var(--spacing-normal)",
-    padding: "var(--spacing-normal)",
-    backgroundColor: "var(--color-grey-100)",
-    borderBottom: "1px solid var(--color-grey-200)",
-    fontWeight: "var(--font-weight-bold)",
-    color: "var(--color-text)",
-  },
-
-  tableRow: {
-    display: "grid",
-    gridTemplateColumns: "1fr 2fr 1fr",
-    gap: "var(--spacing-normal)",
-    padding: "var(--spacing-normal)",
-    borderBottom: "1px solid var(--color-grey-100)",
-    alignItems: "center",
-  },
-
   activityType: {
     fontWeight: "var(--font-weight-medium)",
     color: "var(--color-text)",
   },
 
-  activityMessage: {
+  alertType: {
+    fontWeight: "var(--font-weight-medium)",
     color: "var(--color-text)",
   },
 
-  activityTime: {
+  alertDetails: {
     fontSize: "var(--font-size-small)",
     color: "var(--color-text-secondary)",
     textAlign: "right",
@@ -682,22 +663,5 @@ export const dashboardStyles = {
 
   actionText: {
     color: "var(--color-text)",
-  },
-
-  actionDate: {
-    fontSize: "var(--font-size-small)",
-    color: "var(--color-text-secondary)",
-    textAlign: "right",
-  },
-
-  alertType: {
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text)",
-  },
-
-  alertDetails: {
-    fontSize: "var(--font-size-small)",
-    color: "var(--color-text-secondary)",
-    textAlign: "right",
   },
 } as const;

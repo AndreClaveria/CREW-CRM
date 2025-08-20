@@ -1,7 +1,6 @@
 import React from "react";
 import { dashboardStyles } from "@/styles/pages/dashboard/dashboardStyles";
 import QuickStats from "./QuickStats";
-import SimpleChart from "./SimpleChart";
 import DashboardLoading from "./DashboardLoading";
 import DashboardError from "./DashboardError";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -39,19 +38,11 @@ const UserDashboard: React.FC = () => {
     },
   ];
 
-  // Données de performance mensuelle
-  const performanceData = data.monthlyOpportunities.map((item) => ({
-    label: item.month,
-    value: item.count,
-    maxValue: item.maxValue,
-    color: "#3b82f6",
-  }));
-
   return (
     <div style={dashboardStyles.dashboardGrid}>
       {/* Statistiques principales */}
       <div style={dashboardStyles.statsSection}>
-        <h2 style={dashboardStyles.sectionTitle}>Vue d'Ensemble</h2>
+        <h2 style={dashboardStyles.sectionTitle}>Vue d&apos;Ensemble</h2>
         <QuickStats stats={userStats} />
       </div>
 

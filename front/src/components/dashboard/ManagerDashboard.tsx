@@ -100,7 +100,7 @@ const ManagerDashboard: React.FC = () => {
         : "#8b5cf6",
   }));
 
-  // Performance de l'équipe (simulée pour l'instant, à adapter selon vos besoins)
+  // Performance de l&apos;équipe (simulée pour l&apos;instant, à adapter selon vos besoins)
   const teamPerformance = [
     {
       name: "Équipe Commerciale",
@@ -124,15 +124,19 @@ const ManagerDashboard: React.FC = () => {
 
   return (
     <div style={dashboardStyles.dashboardGrid}>
-      {/* Statistiques de l'équipe */}
+      {/* Statistiques de l&apos;équipe */}
       <div style={dashboardStyles.statsSection}>
-        <h2 style={dashboardStyles.sectionTitle}>Vue d'Ensemble de l'Équipe</h2>
+        <h2 style={dashboardStyles.sectionTitle}>
+          Vue d&apos;Ensemble de l&apos;Équipe
+        </h2>
         <QuickStats stats={managerStats} />
       </div>
 
-      {/* Performance de l'équipe */}
+      {/* Performance de l&apos;équipe */}
       <div style={dashboardStyles.teamSection}>
-        <h2 style={dashboardStyles.sectionTitle}>Performance de l'Équipe</h2>
+        <h2 style={dashboardStyles.sectionTitle}>
+          Performance de l&apos;Équipe
+        </h2>
         <div style={dashboardStyles.teamTable}>
           <div style={dashboardStyles.tableHeader}>
             <span>Équipe</span>
@@ -175,9 +179,11 @@ const ManagerDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Vue d'ensemble du pipeline */}
+      {/* Vue d&apos;ensemble du pipeline */}
       <div style={dashboardStyles.pipelineSection}>
-        <h2 style={dashboardStyles.sectionTitle}>Vue d'Ensemble du Pipeline</h2>
+        <h3 style={dashboardStyles.sectionTitle}>
+          Vue d&apos;ensemble du Pipeline
+        </h3>
         <div style={dashboardStyles.pipelineGrid}>
           {data.pipelineOverview.map((stage, index) => (
             <div key={index} style={dashboardStyles.pipelineCard}>
@@ -237,12 +243,11 @@ const ManagerDashboard: React.FC = () => {
               {data.pipelineOverview.length} étapes actives
             </span>
             <span style={dashboardStyles.alertDetails}>
-              {Math.round(
-                (data.pipelineOverview.filter((s) => s.count > 0).length /
-                  data.pipelineOverview.length) *
-                  100
-              )}
-              % d'activité
+              <span style={dashboardStyles.pipelineNumber}>85%</span>
+              <span style={dashboardStyles.pipelineLabel}>
+                {" "}
+                d&apos;activité
+              </span>
             </span>
           </div>
           {data.dealsByStatus.prospection > 0 && (

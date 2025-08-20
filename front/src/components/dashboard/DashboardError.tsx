@@ -45,7 +45,7 @@ const DashboardError: React.FC<DashboardErrorProps> = ({ error, onRetry }) => {
             <ul style={{ margin: "0.5rem 0", paddingLeft: "1.5rem" }}>
               <li>Vérifiez votre connexion internet</li>
               <li>Réessayez dans quelques instants</li>
-              <li>Contactez l'administrateur si le problème persiste</li>
+              <li>Contactez l&apos;administrateur si le problème persiste</li>
             </ul>
           </div>
         </div>
