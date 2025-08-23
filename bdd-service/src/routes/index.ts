@@ -5,6 +5,7 @@ import dashboardRoutes from "./dashboard.route";
 import opportunityRoutes from "./opportunity.route";
 import companyRoutes from "./company.route";
 import teamRoutes from "./team.route";
+import dealRoutes from "./deal.route";
 const router = Router();
 
 // Add your routes here
@@ -14,5 +15,6 @@ router.use("/dashboard", dashboardRoutes);
 router.use("/teams", teamRoutes);
 router.use("/contacts", contactRoutes);
 router.use("/opportunities", opportunityRoutes);
+router.use("/deals", dealRoutes);
 
 export default router;

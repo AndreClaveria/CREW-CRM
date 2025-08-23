@@ -12,13 +12,13 @@ router.use(authenticateJWT);
 
 // Routes publiques pour tous les utilisateurs authentifiés
 router.get("/", opportunityController.getAllOpportunities);
-router.get("/:id", opportunityController.getOpportunityById);
 router.get(
   "/company/:companyId",
   opportunityController.getOpportunitiesByCompany
 );
 router.get("/client/:clientId", opportunityController.getOpportunitiesByClient);
 router.get("/status/:status", opportunityController.getOpportunitiesByStatus);
+router.get("/:id", opportunityController.getOpportunityById);
 
 // Routes protégées pour les rôles spécifiques
 router.post(

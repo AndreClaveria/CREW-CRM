@@ -391,12 +391,14 @@ const NavBar: React.FC<NavBarProps> = ({ user: initialUser }) => {
         >
           Opportunités
         </div>
-        <div
-          style={navItemStyle(false)}
-          onClick={() => navigateToPipeline("deals")}
-        >
-          Deals
-        </div>
+        {(user?.role === "admin" || user?.role === "manager") && (
+          <div
+            style={navItemStyle(false)}
+            onClick={() => navigateToPipeline("deals")}
+          >
+            Deals
+          </div>
+        )}
       </div>
 
       {/* Menu Téléphone */}
