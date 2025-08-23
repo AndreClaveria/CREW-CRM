@@ -36,6 +36,20 @@ services:
       retries: 3
       start_period: 30s
 
+  data-seeder:
+    build: ./data-seeder
+    container_name: crew-crm-seeder
+    environment:
+      - AUTH_MONGO_URI=mongodb://mongo:27017/autenthication-service
+      - BDD_MONGO_URI=mongodb://mongo:27017/bdd-services
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - crew-crm-network
+    restart: "no" # Ne redémarre pas automatiquement
   # Service BDD (port 3001)
   bdd-service:
     build: ./bdd-service

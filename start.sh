@@ -24,7 +24,19 @@ echo "🚀 Démarrage des services..."
 docker-compose up -d
 
 echo "⏳ Attente que tous les services soient prêts..."
-sleep 20
+sleep 30
+
+echo "🌱 Seeding des données de test..."
+docker-compose logs data-seeder
+
+# Attendre que le seeder se termine
+echo "⏳ Attente de la fin du seeding..."
+while [ "$(docker-compose ps -q data-seeder)" ]; do
+    if [ "$(docker inspect -f '{{.State.Status}}' $(docker-compose ps -q data-seeder) 2>/dev/null)" = "exited" ]; then
+        break
+    fi
+    sleep 2
+done
 
 # Vérifier le statut des services
 echo ""
@@ -55,6 +67,13 @@ echo "✅ Stripe configuré (Paiements)"
 echo "✅ OpenAI configuré (IA)"
 
 echo ""
+echo "👥 Données de test créées :"
+echo "=========================="
+echo "🔑 Admin: admin@crew-crm.com (mot de passe: admin123)"
+echo "👔 Managers: jean.dupont@techcorp.fr, marie.martin@greenenergy.fr, pierre.bernard@creativeplus.fr (mot de passe: manager123)"
+echo "👤 Users: divers utilisateurs dans chaque équipe (mot de passe: user123)"
+
+echo ""
 echo "📖 Commandes utiles :"
 echo "===================="
 echo "📝 Voir les logs        : docker-compose logs -f"
@@ -62,7 +81,8 @@ echo "📝 Logs d'un service    : docker-compose logs -f [service-name]"
 echo "🛑 Arrêter l'application : docker-compose down"
 echo "🔄 Redémarrer           : docker-compose restart"
 echo "🧹 Nettoyer tout        : docker-compose down -v"
+echo "🌱 Re-seed les données  : docker-compose restart data-seeder"
 
 echo ""
 echo "✅ CREW-CRM est maintenant démarré !"
-echo "🌟 Tous vos services sont fonctionnels avec les vraies APIs !"
+echo "🌟 Tous vos services sont fonctionnels avec les vraies APIs et les données de test !"
