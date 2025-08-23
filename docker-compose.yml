@@ -110,8 +110,8 @@ services:
       - JWT_EXPIRES_IN=6h
       - LOG_LEVEL=info
       - SERVICE_NAME=autenthication-service
-      - GOOGLE_CLIENT_ID=fake-google-client-id-for-dev
-      - GOOGLE_CLIENT_SECRET=fake-google-client-secret-for-dev
+      - GOOGLE_CLIENT_ID=1042771701848-gi25mu5qgbag5kknl9dmpoofap16r35l.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
       - GOOGLE_CALLBACK_URL=http://localhost:3002/api/auth/google/callback
       - REDIS_URL=redis://:crew-crm-redis-password@redis:6379
       - REDIS_HOST=redis
@@ -148,17 +148,17 @@ services:
       - PORT=3003
       - JWT_SECRET=your-secret-key
       - JWT_EXPIRES_IN=1d
-      - BREVO_API_KEY=
+      - BREVO_API_KEY=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
       - SMTP_HOST=smtp-relay.brevo.com
       - SMTP_PORT=587
-      - SMTP_USER=fake-smtp-user-for-dev
-      - SMTP_PASSWORD=fake-smtp-password-for-dev
+      - SMTP_USER=fandreclaveria2002@gmail.com
+      - SMTP_PASSWORD=v6QEbtI0yTh1Zpnq
       - EMAIL_FROM=noreply@andreclaveria-crm.com
       - EMAIL_FROM_NAME=CRM AndreClaveria
       - FRONTEND_URL=http://localhost:3000
       - AUTH_SERVICE_URL=http://authentication-service:3002
       - DATABASE_SERVICE_URL=http://bdd-service:3001
-      - DISCORD_INFO_WEBHOOK=https://discord.com/api/webhooks/fake/webhook-for-dev
+      - DISCORD_INFO_WEBHOOK=https://discord.com/api/webhooks/1361298731416293499/r-fRs5uVwnIeY315WuyYDg9ozK9ncTbEmOiDuaxv1p94BS2CArvynwB5xFfNp1S9rcUg
       - SERVICE_NAME=NOTIFICATIONS-SERVICE_NAME
       - ENABLE_MONITORING=true
       - MONITORING_INTERVAL_MINUTES=60
@@ -246,7 +246,7 @@ services:
       - JWT_SECRET=your-secret-key
       - JWT_EXPIRES_IN=6h
       - LOG_LEVEL=info
-      - OPENAI_API_KEY=sk-fake-openai-key-for-developments
+      - OPENAI_API_KEY=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
       - SERVICE_NAME=service-ia
     depends_on:
       mongo:
@@ -280,8 +280,8 @@ services:
       - HOST=localhost
       - PORT=3006
       - PROTOCOL=http
-      - STRIPE_SECRET_KEY=sk_test_fake_stripe_secret_key_for_dev
-      - STRIPE_PUBLISHABLE_KEY=pk_test_fake_stripe_publishable_key_for_dev
+      - STRIPE_SECRET_KEY=sk_test_51RdTUBK1ryv177tBC7VNJgbaYo2K0Z1j7DYQBpAoz14kk2sJ75iAoaliW85bKnCAvYssVpiCWix3G2p7Y0R2Itu200O56Sxh4W
+      - STRIPE_PUBLISHABLE_KEY=pk_test_51RdTUBK1ryv177tBvTOmWEwigK7ECFs24QwPtOZkKaGjvm2YWbIdsUZjR68Mhl5yhJF0GVQrbrzN5hNWaOaoZnbZ00Bv0q2kAc
       - FRONTEND_URL=http://localhost:3000
       - MONGO_URI=mongodb://mongo:27017/payment-services
       - JWT_SECRET=your-secret-key
@@ -321,7 +321,7 @@ services:
       - NEXT_PUBLIC_API_URL_METRICS=http://localhost:3004/api/
       - NEXT_PUBLIC_API_URL_IA=http://localhost:3005/api/
       - NEXT_PUBLIC_API_URL_PAYMENT=http://localhost:3006/api/
-      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_fake_stripe_publ ishable_key_for_dev
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51RdTUBK1ryv177tBvTOmWEwigK7ECFs24QwPtOZkKaGjvm2YWbIdsUZjR68Mhl5yhJF0GVQrbrzN5hNWaOaoZnbZ00Bv0q2kAc
     depends_on:
       mongo:
         condition: service_healthy
