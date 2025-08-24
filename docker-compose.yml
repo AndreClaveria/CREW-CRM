@@ -246,7 +246,7 @@ services:
       - JWT_SECRET=your-secret-key
       - JWT_EXPIRES_IN=6h
       - LOG_LEVEL=info
-      - OPENAI_API_KEY=sk-proj-NTY-KEY-for-dev-only
+      - OPENAI_API_KEY=sk-fake-openai-key-for-developments
       - SERVICE_NAME=service-ia
     depends_on:
       mongo:
