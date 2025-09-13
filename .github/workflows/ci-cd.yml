@@ -54,7 +54,7 @@ jobs:
         working-directory: ./${{ matrix.service }}
         run: npm run lint || echo "⚠️ No lint script found for ${{ matrix.service }}"
 
-      - name: Run tests
+      - name: Run test
         working-directory: ./${{ matrix.service }}
         run: |
           if [ "${{ matrix.service }}" = "front" ]; then
@@ -985,7 +985,7 @@ jobs:
 
     environment:
       name: production-vps
-      url: http://${{ secrets.VPS_HOST }}:3000
+      url: https://{{ secrets.DOMAIN_NAME }}
 
     steps:
       - name: Deploy to VPS
@@ -999,9 +999,7 @@ jobs:
             cd /root/crew-crm
             git checkout prod
             git pull origin prod
-            docker-compose down
-            docker-compose up -d --build
-            sleep 60
+            ./start.sh
             echo "Deployment completed!"
   # Rapport final avec notifications Discord
   final-report:
