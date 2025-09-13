@@ -348,6 +348,108 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create environnement files for services
+        run: |
+          echo "Creating .env files for all services..."
+
+          # Authentication Service
+          cat > authentication-service/.env << 'EOF'
+          NODE_ENV=test
+          PORT=3002
+          HOST=0.0.0.0
+          MONGO_URI=mongodb://mongo:27017/autenthication-service
+          JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
+          JWT_EXPIRES_IN=6h
+          REDIS_URL=redis://:crew-crm-redis-password@redis:6379
+          REDIS_HOST=redis
+          REDIS_PORT=6379
+          REDIS_PASSWORD=crew-crm-redis-password
+          GOOGLE_CLIENT_ID=fake-google-client-id-for-tests
+          GOOGLE_CLIENT_SECRET=fake-google-client-secret-for-tests
+          GOOGLE_CALLBACK_URL=http://localhost:3002/api/auth/google/callback
+          EOF
+
+          # BDD Service
+          cat > bdd-service/.env << 'EOF'
+          NODE_ENV=test
+          PORT=3001
+          HOST=0.0.0.0
+          MONGO_URI=mongodb://mongo:27017/bdd-services
+          JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
+          JWT_EXPIRES_IN=6h
+          REDIS_URL=redis://:crew-crm-redis-password@redis:6379
+          REDIS_HOST=redis
+          REDIS_PORT=6379
+          REDIS_PASSWORD=crew-crm-redis-password
+          EOF
+
+          # Notification Service
+          cat > notification-mail-sms-service/.env << 'EOF'
+          NODE_ENV=test
+          PORT=3003
+          HOST=0.0.0.0
+          JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
+          JWT_EXPIRES_IN=1d
+          BREVO_API_KEY=fake-brevo-key-for-tests
+          SMTP_HOST=smtp-relay.brevo.com
+          SMTP_PORT=587
+          SMTP_USER=test@example.com
+          SMTP_PASSWORD=fake-password
+          EMAIL_FROM=noreply@test.com
+          EMAIL_FROM_NAME=CRM Test
+          MONGO_URI=mongodb://mongo:27017/notification-mail-sms-service
+          EOF
+
+          # Metrics Service
+          cat > metrics-service/.env << 'EOF'
+          NODE_ENV=test
+          PORT=3004
+          HOST=0.0.0.0
+          JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
+          JWT_EXPIRES_IN=1d
+          EMAIL_FROM=noreply@test.com
+          EMAIL_FROM_NAME=CRM Test
+          DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/fake/webhook-for-tests
+          EOF
+
+          # Service IA
+          cat > service-ia/.env << 'EOF'
+          NODE_ENV=test
+          PORT=3005
+          HOST=0.0.0.0
+          MONGO_URI=mongodb://mongo:27017/ia-services
+          JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
+          JWT_EXPIRES_IN=6h
+          OPENAI_API_KEY=sk-fake-openai-key-for-tests-only
+          EOF
+
+          # Payment Service
+          cat > payment-service/.env << 'EOF'
+          NODE_ENV=test
+          PORT=3006
+          HOST=0.0.0.0
+          MONGO_URI=mongodb://mongo:27017/payment-services
+          JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
+          JWT_EXPIRES_IN=6h
+          STRIPE_SECRET_KEY=sk_test_fake_stripe_key_for_tests
+          STRIPE_PUBLISHABLE_KEY=pk_test_fake_stripe_key_for_tests
+          EOF
+
+          # Frontend
+          cat > front/.env << 'EOF'
+          NODE_ENV=test
+          PORT=3000
+          NEXT_PUBLIC_API_URL=http://localhost:3002/api/
+          NEXT_PUBLIC_API_URL_BDD=http://localhost:3001/api/
+          NEXT_PUBLIC_API_URL_NOTIFICATION=http://localhost:3003/api/
+          NEXT_PUBLIC_API_URL_METRICS=http://localhost:3004/api/
+          NEXT_PUBLIC_API_URL_IA=http://localhost:3005/api/
+          NEXT_PUBLIC_API_URL_PAYMENT=http://localhost:3006/api/
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_fake_stripe_key_for_tests
+          EOF
+
+          echo "✅ All .env files created successfully for testing"
+
       - name: Create test environment file
         run: |
           cat > .env.test << EOF
@@ -875,7 +977,32 @@ jobs:
             **Version:** ${{ needs.version.outputs.version }}
 
             🎉 Application disponible et fonctionnelle !
+  deploy-to-vps:
+    name: Deploy to OVH VPS Production
+    runs-on: ubuntu-latest
+    needs: [integration-test, version]
+    if: github.ref == 'refs/heads/prod' && github.event_name == 'push'
 
+    environment:
+      name: production-vps
+      url: http://${{ secrets.VPS_HOST }}:3000
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            echo "Deploying CREW-CRM to production VPS..."
+            cd /root/crew-crm
+            git checkout prod
+            git pull origin prod
+            docker-compose down
+            docker-compose up -d --build
+            sleep 60
+            echo "Deployment completed!"
   # Rapport final avec notifications Discord
   final-report:
     name: Final Report
@@ -889,6 +1016,7 @@ jobs:
         e2e-tests,
         version,
         deploy,
+        deploy-to-vps,
       ]
     if: always()
 
