@@ -3,6 +3,7 @@
 const AI_API_URL =
   process.env.NEXT_PUBLIC_API_URL_IA || "http://localhost:3005/api/";
 
+const AI_URL = process.env.NEXT_PUBLIC_AI_URL || "http://localhost:3005/";
 // ✅ Interface complète correspondant exactement à votre API
 export interface AIAnalysisResult {
   // Données de base (existantes)
@@ -93,7 +94,7 @@ export const checkAIHealth = async (): Promise<AIHealthStatus> => {
 
     console.log(`🔍 Vérification santé du service IA: ${AI_API_URL}/health`);
 
-    const response = await fetch(`http://localhost:3005/health`, {
+    const response = await fetch(`${{ AI_URL }}health`, {
       method: "GET",
       headers: {
         ...headers,
