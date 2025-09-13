@@ -36,6 +36,20 @@ services:
       retries: 3
       start_period: 30s
 
+  data-seeder:
+    build: ./data-seeder
+    container_name: crew-crm-seeder
+    environment:
+      - AUTH_MONGO_URI=mongodb://mongo:27017/autenthication-service
+      - BDD_MONGO_URI=mongodb://mongo:27017/bdd-services
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - crew-crm-network
+    restart: "no" # Ne redémarre pas automatiquement
   # Service BDD (port 3001)
   bdd-service:
     build: ./bdd-service
@@ -100,8 +114,8 @@ services:
       - JWT_EXPIRES_IN=6h
       - LOG_LEVEL=info
       - SERVICE_NAME=autenthication-service
-      - GOOGLE_CLIENT_ID=fake-google-client-id-for-dev
-      - GOOGLE_CLIENT_SECRET=fake-google-client-secret-for-dev
+      - GOOGLE_CLIENT_ID=client-id-for-dev-only.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=secret-for-dev-only
       - GOOGLE_CALLBACK_URL=http://localhost:3002/api/auth/google/callback
       - REDIS_URL=redis://:crew-crm-redis-password@redis:6379
       - REDIS_HOST=redis
@@ -143,8 +157,8 @@ services:
       - BREVO_API_KEY=
       - SMTP_HOST=smtp-relay.brevo.com
       - SMTP_PORT=587
-      - SMTP_USER=fake-smtp-user-for-dev
-      - SMTP_PASSWORD=fake-smtp-password-for-dev
+      - SMTP_USER=fandreclaveria2002@gmail.com
+      - SMTP_PASSWORD=
       - EMAIL_FROM=noreply@andreclaveria-crm.com
       - EMAIL_FROM_NAME=CRM AndreClaveria
       - FRONTEND_URL=http://localhost:3000
@@ -278,8 +292,8 @@ services:
       - HOST=localhost
       - PORT=3006
       - PROTOCOL=http
-      - STRIPE_SECRET_KEY=sk_test_fake_stripe_secret_key_for_dev
-      - STRIPE_PUBLISHABLE_KEY=pk_test_fake_stripe_publishable_key_for_dev
+      - STRIPE_SECRET_KEY=sk_testkeyforlocaldevonly
+      - STRIPE_PUBLISHABLE_KEY=pk_testkeyforlocaldevonly
       - FRONTEND_URL=http://localhost:3000
       - MONGO_URI=mongodb://mongo:27017/payment-services
       - JWT_SECRET=your-secret-key
@@ -321,7 +335,7 @@ services:
       - NEXT_PUBLIC_API_URL_METRICS=http://localhost:3004/api/
       - NEXT_PUBLIC_API_URL_IA=http://localhost:3005/api/
       - NEXT_PUBLIC_API_URL_PAYMENT=http://localhost:3006/api/
-      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_fake_stripe_publ ishable_key_for_dev
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_testkeyforlocaldevonly
     depends_on:
       mongo:
         condition: service_healthy
