@@ -58,23 +58,6 @@ services:
     container_name: crew-crm-bdd
     ports:
       - "3001:3001"
-    environment:
-      - NODE_ENV=development
-      - HOST=localhost
-      - PORT=3001
-      - FRONTEND_URL=http://localhost:3000
-      - AUTH_URL=http://authentication-service:3002/api
-      - NOTIFICATION_URL=http://notification-mail-sms-service:3003/api/notification
-      - PROTOCOL=http
-      - MONGO_URI=mongodb://mongo:27017/bdd-services
-      - JWT_SECRET=your-secret-key
-      - JWT_EXPIRES_IN=6h
-      - LOG_LEVEL=info
-      - SERVICE_NAME=bdd-services
-      - REDIS_URL=redis://:crew-crm-redis-password@redis:6379
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=crew-crm-redis-password
     depends_on:
       mongo:
         condition: service_healthy
@@ -102,25 +85,6 @@ services:
     container_name: crew-crm-auth
     ports:
       - "3002:3002"
-    environment:
-      - NODE_ENV=development
-      - HOST=localhost
-      - PORT=3002
-      - FRONTEND_URL=http://localhost:3000
-      - NOTIFICATION_URL=http://notification-mail-sms-service:3003/api/notification
-      - PROTOCOL=http
-      - MONGO_URI=mongodb://mongo:27017/autenthication-service
-      - JWT_SECRET=your-secret-key
-      - JWT_EXPIRES_IN=6h
-      - LOG_LEVEL=info
-      - SERVICE_NAME=autenthication-service
-      - GOOGLE_CLIENT_ID=client-id-for-dev-only.apps.googleusercontent.com
-      - GOOGLE_CLIENT_SECRET=secret-for-dev-only
-      - GOOGLE_CALLBACK_URL=http://localhost:3002/api/auth/google/callback
-      - REDIS_URL=redis://:crew-crm-redis-password@redis:6379
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=crew-crm-redis-password
     depends_on:
       mongo:
         condition: service_healthy
@@ -148,27 +112,6 @@ services:
     container_name: crew-crm-notifications
     ports:
       - "3003:3003"
-    environment:
-      - NODE_ENV=development
-      - HOST=localhost
-      - PORT=3003
-      - JWT_SECRET=your-secret-key
-      - JWT_EXPIRES_IN=1d
-      - BREVO_API_KEY=
-      - SMTP_HOST=smtp-relay.brevo.com
-      - SMTP_PORT=587
-      - SMTP_USER=fandreclaveria2002@gmail.com
-      - SMTP_PASSWORD=
-      - EMAIL_FROM=noreply@andreclaveria-crm.com
-      - EMAIL_FROM_NAME=CRM AndreClaveria
-      - FRONTEND_URL=http://localhost:3000
-      - AUTH_SERVICE_URL=http://authentication-service:3002
-      - DATABASE_SERVICE_URL=http://bdd-service:3001
-      - DISCORD_INFO_WEBHOOK=https://discord.com/api/webhooks/fake/webhook-for-dev
-      - SERVICE_NAME=NOTIFICATIONS-SERVICE_NAME
-      - ENABLE_MONITORING=true
-      - MONITORING_INTERVAL_MINUTES=60
-      - MONGO_URI=mongodb://mongo:27017/notification-mail-sms-service
     depends_on:
       mongo:
         condition: service_healthy
@@ -198,22 +141,6 @@ services:
     container_name: crew-crm-metrics
     ports:
       - "3004:3004"
-    environment:
-      - NODE_ENV=development
-      - HOST=localhost
-      - PORT=3004
-      - JWT_SECRET=your-secret-key
-      - JWT_EXPIRES_IN=1d
-      - EMAIL_FROM=noreply@clement.roc2002-crm.com
-      - EMAIL_FROM_NAME=CRM Clement7892
-      - FRONTEND_URL=http://localhost:3000
-      - AUTH_SERVICE_URL=http://authentication-service:3002
-      - DATABASE_SERVICE_URL=http://bdd-service:3001
-      - EMAIL_SERVICE_URL=http://notification-mail-sms-service:3003
-      - DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/fake/webhook-for-dev
-      - SERVICE_NAME=METRICS
-      - ENABLE_MONITORING=true
-      - MONITORING_INTERVAL_MINUTES=60
     depends_on:
       mongo:
         condition: service_healthy
@@ -243,21 +170,6 @@ services:
     container_name: crew-crm-ia
     ports:
       - "3005:3005"
-    environment:
-      - NODE_ENV=development
-      - HOST=localhost
-      - PORT=3005
-      - FRONTEND_URL=http://localhost:3000
-      - BDD_URL=http://bdd-service:3001/api
-      - AUTH_URL=http://authentication-service:3002/api
-      - NOTIFICATION_URL=http://notification-mail-sms-service:3003/api/notification
-      - PROTOCOL=http
-      - MONGO_URI=mongodb://mongo:27017/ia-services
-      - JWT_SECRET=your-secret-key
-      - JWT_EXPIRES_IN=6h
-      - LOG_LEVEL=info
-      - OPENAI_API_KEY=sk-fake-openai-key-for-developments
-      - SERVICE_NAME=service-ia
     depends_on:
       mongo:
         condition: service_healthy
@@ -287,18 +199,6 @@ services:
     container_name: crew-crm-payment
     ports:
       - "3006:3006"
-    environment:
-      - NODE_ENV=development
-      - HOST=localhost
-      - PORT=3006
-      - PROTOCOL=http
-      - STRIPE_SECRET_KEY=sk_testkeyforlocaldevonly
-      - STRIPE_PUBLISHABLE_KEY=pk_testkeyforlocaldevonly
-      - FRONTEND_URL=http://localhost:3000
-      - MONGO_URI=mongodb://mongo:27017/payment-services
-      - JWT_SECRET=your-secret-key
-      - JWT_EXPIRES_IN=6h
-      - LOG_LEVEL=info
     depends_on:
       mongo:
         condition: service_healthy
@@ -326,16 +226,6 @@ services:
     container_name: crew-crm-frontend
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=development
-      - PORT=3000
-      - NEXT_PUBLIC_API_URL=http://localhost:3002/api/
-      - NEXT_PUBLIC_API_URL_BDD=http://localhost:3001/api/
-      - NEXT_PUBLIC_API_URL_NOTIFICATION=http://localhost:3003/api/
-      - NEXT_PUBLIC_API_URL_METRICS=http://localhost:3004/api/
-      - NEXT_PUBLIC_API_URL_IA=http://localhost:3005/api/
-      - NEXT_PUBLIC_API_URL_PAYMENT=http://localhost:3006/api/
-      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_testkeyforlocaldevonly
     depends_on:
       mongo:
         condition: service_healthy
