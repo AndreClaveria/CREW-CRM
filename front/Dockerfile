@@ -11,6 +11,9 @@ RUN npm ci
 # Copier le code source
 COPY . .
 
+# Nettoyer le cache Next.js
+RUN rm -rf .next
+
 # Build SANS appels API
 RUN npm run build
 
