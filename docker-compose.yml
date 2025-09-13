@@ -53,6 +53,8 @@ services:
   # Service BDD (port 3001)
   bdd-service:
     build: ./bdd-service
+    env_file:
+      - ./bdd-service/.env
     container_name: crew-crm-bdd
     ports:
       - "3001:3001"
@@ -95,6 +97,8 @@ services:
   # Service d'authentification (port 3002)
   authentication-service:
     build: ./authentication-service
+    env_file:
+      - ./authentication-service/.env
     container_name: crew-crm-auth
     ports:
       - "3002:3002"
@@ -139,6 +143,8 @@ services:
   # Service de notifications (port 3003)
   notification-mail-sms-service:
     build: ./notification-mail-sms-service
+    env_file:
+      - ./notification-mail-sms-service/.env
     container_name: crew-crm-notifications
     ports:
       - "3003:3003"
@@ -187,6 +193,8 @@ services:
   # Service de métriques (port 3004)
   metrics-service:
     build: ./metrics-service
+    env_file:
+      - ./metrics-service/.env
     container_name: crew-crm-metrics
     ports:
       - "3004:3004"
@@ -230,6 +238,8 @@ services:
   # Service IA (port 3005)
   service-ia:
     build: ./service-ia
+    env_file:
+      - ./service-ia/.env
     container_name: crew-crm-ia
     ports:
       - "3005:3005"
@@ -272,6 +282,8 @@ services:
   # Service de paiement (port 3006)
   payment-service:
     build: ./payment-service
+    env_file:
+      - ./payment-service/.env
     container_name: crew-crm-payment
     ports:
       - "3006:3006"
@@ -309,6 +321,8 @@ services:
   # Frontend NextJS (port 3000) - SE LANCE EN DERNIER
   frontend:
     build: ./front
+    env_file:
+      - ./front/.env
     container_name: crew-crm-frontend
     ports:
       - "3000:3000"
