@@ -347,7 +347,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      - name: Create secrets for CI # ← Ajoutez ici
+        run: |
+          mkdir -p secrets
+          echo "${{ secrets.MONGO_PASSWORD }}" > secrets/mongo_password.txt
+          echo "${{ secrets.REDIS_PASSWORD }}" > secrets/redis_password.txt
+          chmod 600 secrets/*
       - name: Create environnement files for services
         run: |
           echo "Creating .env files for all services..."
@@ -357,10 +362,10 @@ jobs:
           NODE_ENV=test
           PORT=3002
           HOST=0.0.0.0
-          MONGO_URI=mongodb://mongo:27017/autenthication-service
+          MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongo:27017/autenthication-service?authSource=admin
           JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
           JWT_EXPIRES_IN=6h
-          REDIS_URL=redis://:crew-crm-redis-password@redis:6379
+          REDIS_URL=redis://:${{ secrets.REDIS_PASSWORD }}@redis:6379
           REDIS_HOST=redis
           REDIS_PORT=6379
           REDIS_PASSWORD=crew-crm-redis-password
@@ -374,10 +379,10 @@ jobs:
           NODE_ENV=test
           PORT=3001
           HOST=0.0.0.0
-          MONGO_URI=mongodb://mongo:27017/bdd-services
+          MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongo:27017/bdd-services?authSource=admin
           JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
           JWT_EXPIRES_IN=6h
-          REDIS_URL=redis://:crew-crm-redis-password@redis:6379
+          REDIS_URL=redis://:${{ secrets.REDIS_PASSWORD }}@redis:6379
           REDIS_HOST=redis
           REDIS_PORT=6379
           REDIS_PASSWORD=crew-crm-redis-password
@@ -397,7 +402,7 @@ jobs:
           SMTP_PASSWORD=fake-password
           EMAIL_FROM=noreply@test.com
           EMAIL_FROM_NAME=CRM Test
-          MONGO_URI=mongodb://mongo:27017/notification-mail-sms-service
+          MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongo:27017/notification-mail-sms-service?authSource=admin
           EOF
 
           # Metrics Service
@@ -417,7 +422,7 @@ jobs:
           NODE_ENV=test
           PORT=3005
           HOST=0.0.0.0
-          MONGO_URI=mongodb://mongo:27017/ia-services
+          MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongo:27017/ia-services?authSource=admin
           JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
           JWT_EXPIRES_IN=6h
           OPENAI_API_KEY=sk-fake-openai-key-for-tests-only
@@ -428,7 +433,7 @@ jobs:
           NODE_ENV=test
           PORT=3006
           HOST=0.0.0.0
-          MONGO_URI=mongodb://mongo:27017/payment-services
+          MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongo:27017/payment-services?authSource=admin
           JWT_SECRET=test-jwt-secret-key-for-ci-cd-pipeline
           JWT_EXPIRES_IN=6h
           STRIPE_SECRET_KEY=sk_test_fake_stripe_key_for_tests
@@ -454,7 +459,7 @@ jobs:
         run: |
           cat > .env.test << EOF
           NODE_ENV=test
-          MONGO_URI=mongodb://mongo:27017/crew-crm-test
+          MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongo:27017/crew-crm-test?authSource=admin  
           REDIS_PASSWORD=test-redis-password
           JWT_SECRET=test-jwt-secret-key-for-ci
           OPENAI_API_KEY=sk-test-fake-key-for-ci
