@@ -352,7 +352,7 @@ jobs:
           mkdir -p secrets
           echo "${{ secrets.MONGO_PASSWORD }}" > secrets/mongo_password.txt
           echo "${{ secrets.REDIS_PASSWORD }}" > secrets/redis_password.txt
-          chmod 600 secrets/*
+          chmod 644 secrets/*
       - name: Create environnement files for services
         run: |
           echo "Creating .env files for all services..."
