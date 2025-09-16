@@ -30,7 +30,7 @@ const ClientHeader: React.FC<ClientHeaderProps> = ({
       <div style={styles.buttonContainer}>
         <ActionButton
           onClick={() =>
-            (window.location.href = `/dashboard/admin/manage/company/clients/${company?._id}/edit/${clientId}`)
+            (window.location.href = `/dashboard/pipeline/company/clients/${company?._id}/edit/${clientId}`)
           }
           variant="secondary"
           size="medium"

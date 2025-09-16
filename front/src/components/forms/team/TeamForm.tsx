@@ -73,7 +73,7 @@ const TeamForm: React.FC<TeamFormProps> = ({ mode, companyId, teamId }) => {
           )}
         </div>
         <button
-          onClick={() => router.push(`/dashboard/teams`)}
+          onClick={() => router.push(`/dashboard/pipeline/team`)}
           style={styles.backButton}
         >
           Retour à la liste
@@ -105,7 +105,7 @@ const TeamForm: React.FC<TeamFormProps> = ({ mode, companyId, teamId }) => {
           <div style={styles.buttonContainer}>
             <button
               type="button"
-              onClick={() => router.push(`/dashboard/teams`)}
+              onClick={() => router.push(`/dashboard/pipeline/team`)}
               style={styles.cancelButton}
             >
               Annuler

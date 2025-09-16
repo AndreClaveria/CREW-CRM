@@ -198,7 +198,7 @@ export const useTeamDetails = (teamId: string): UseTeamDetailsReturn => {
   };
 
   const navigateToMembersManagement = () => {
-    router.push(`${getBaseRoute()}/team/${teamId}/members`);
+    router.push(`${getBaseRoute()}/team/${teamId}/members/add/${company?._id}`);
   };
 
   const navigateToClientsManagement = () => {

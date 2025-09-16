@@ -62,7 +62,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ mode, companyId }) => {
             : "Modifier l'entreprise"}
         </h1>
         <button
-          onClick={() => router.push(`/dashboard/companies`)}
+          onClick={() => router.push(`/dashboard/pipeline/company`)}
           style={styles.backButton}
         >
           Retour à la liste
@@ -104,7 +104,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ mode, companyId }) => {
           <div style={styles.buttonContainer}>
             <button
               type="button"
-              onClick={() => router.push(`/dashboard/companies`)}
+              onClick={() => router.push(`/dashboard/pipeline/company`)}
               style={styles.cancelButton}
             >
               Annuler

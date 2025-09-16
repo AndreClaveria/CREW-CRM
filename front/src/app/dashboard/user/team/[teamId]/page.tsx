@@ -6,6 +6,7 @@ import TeamDetails from "@/components/teams/TeamDetails";
 interface TeamPageParams {
   params: Promise<{
     teamId: string;
+    companyId: string;
   }>;
 }
 

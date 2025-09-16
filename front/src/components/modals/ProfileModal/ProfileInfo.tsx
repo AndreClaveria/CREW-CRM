@@ -33,6 +33,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ userData }) => {
         </div>
       </div>
 
+      <button
+        style={profileModalStyles.button}
+        onClick={() => (window.location.href = "/dashboard/user")}
+      >
+        Aller au profil utilisateur
+      </button>
+
       <div style={profileModalStyles.formField}>
         <label style={profileModalStyles.fieldLabel}>Email</label>
         <p style={profileModalStyles.fieldValue}>{userData.email}</p>

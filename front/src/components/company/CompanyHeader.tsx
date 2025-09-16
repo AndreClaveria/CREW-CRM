@@ -18,7 +18,7 @@ const CompanyHeader: React.FC<CompanyHeaderProps> = ({
   const { user } = useAuth();
 
   const handleEdit = () => {
-    router.push(`/dashboard/companies/edit/${companyId}`);
+    router.push(`/dashboard/pipeline/company/edit/${companyId}`);
   };
 
   return (

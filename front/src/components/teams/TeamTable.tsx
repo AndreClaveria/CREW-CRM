@@ -66,7 +66,9 @@ const TeamTable: React.FC<TeamTableProps> = ({
             style={{ display: "flex", justifyContent: "center", gap: "10px" }}
           >
             <ActionButton
-              onClick={() => router.push(`/dashboard/teams/edit/${team._id}`)}
+              onClick={() =>
+                router.push(`/dashboard/pipeline/team/edit/${team._id}`)
+              }
               variant="secondary"
               size="medium"
             >
@@ -74,7 +76,7 @@ const TeamTable: React.FC<TeamTableProps> = ({
             </ActionButton>
             <ActionButton
               onClick={() =>
-                router.push(`/dashboard/teams/members/${team._id}`)
+                router.push(`/dashboard/pipeline/team/members/${team._id}`)
               }
               size="medium"
             >

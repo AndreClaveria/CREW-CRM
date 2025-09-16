@@ -79,7 +79,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
           >
             <ActionButton
               onClick={() =>
-                router.push(`/dashboard/companies/edit/${company._id}`)
+                router.push(`/dashboard/pipeline/company/edit/${company._id}`)
               }
               variant="secondary"
               size="medium"
@@ -88,7 +88,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
             </ActionButton>
             <ActionButton
               onClick={() =>
-                router.push(`/dashboard/companies/teams/${company._id}`)
+                router.push(`/dashboard/pipeline/company/teams/${company._id}`)
               }
               size="medium"
             >
@@ -96,7 +96,9 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
             </ActionButton>
             <ActionButton
               onClick={() =>
-                router.push(`/dashboard/companies/clients/${company._id}`)
+                router.push(
+                  `/dashboard/pipeline/company/clients/${company._id}`
+                )
               }
               size="medium"
             >

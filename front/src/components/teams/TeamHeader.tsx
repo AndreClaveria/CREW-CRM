@@ -28,7 +28,7 @@ const TeamHeader: React.FC<TeamHeaderProps> = ({
 
   // Fonction pour générer l'URL d'édition
   const getEditUrl = () => {
-    return `/dashboard/teams/edit/${teamId}`;
+    return `/dashboard/pipeline/team/edit/${teamId}`;
   };
 
   return (

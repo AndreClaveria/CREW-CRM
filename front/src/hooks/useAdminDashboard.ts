@@ -51,19 +51,19 @@ export const useAdminDashboard = (): UseAdminDashboardReturn => {
 
   // Fonctions de navigation
   const navigateToUserDetails = (userId: string) => {
-    router.push(`/dashboard/admin/manage/users/${userId}`);
+    router.push(`/dashboard/pipeline/users/${userId}`);
   };
 
   const navigateToCompanyDetails = (companyId: string) => {
-    router.push(`/dashboard/admin/manage/company/${companyId}`);
+    router.push(`/dashboard/pipeline/company/${companyId}`);
   };
 
   const navigateToUserManagement = () => {
-    router.push("/dashboard/admin/manage/users");
+    router.push("/dashboard/pipeline/users");
   };
 
   const navigateToCompanyManagement = () => {
-    router.push("/dashboard/admin/manage/company");
+    router.push("/dashboard/pipeline/company");
   };
 
   const navigateToSystemHealth = () => {
