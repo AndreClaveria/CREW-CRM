@@ -44,6 +44,14 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
       </div>
 
       <div style={styles.divider}></div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: 16,
+        }}
+      ></div>
+   
 
       <div style={styles.detailsGrid}>
         <div style={styles.detailsItem}>

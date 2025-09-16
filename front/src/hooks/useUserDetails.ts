@@ -156,16 +156,16 @@ export const useUserDetails = (userId: string): UseUserDetailsReturn => {
     if (routePrefix === "user") {
       router.push(`/dashboard/user/company/${companyId}`);
     } else {
-      router.push(`${baseRoute}/manage/company/${companyId}`);
+      router.push(`/dashboard/pipeline/company/${companyId}`);
     }
   };
 
   const navigateToTeam = (teamId: string, companyId?: string) => {
     const baseRoute = getBaseRoute();
     if (routePrefix === "user") {
-      router.push(`/dashboard/user/team/${teamId}`);
+      router.push(`/dashboard/pipeline/team/${teamId}`);
     } else {
-      router.push(`${baseRoute}/manage/company/teams/${companyId}/${teamId}`);
+      router.push(`/dashboard/pipeline/company/teams/${companyId}/${teamId}`);
     }
   };
 

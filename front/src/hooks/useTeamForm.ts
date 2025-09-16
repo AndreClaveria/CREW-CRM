@@ -181,9 +181,7 @@ export const useTeamForm = ({
 
       // Redirection après un délai
       setTimeout(() => {
-        router.push(
-          `/dashboard/${getRoutePrefix()}/manage/company/teams/${companyId}`
-        );
+        router.push(`/dashboard/pipeline/company/teams/${companyId}`);
       }, 2000);
     } catch (err: any) {
       console.error(

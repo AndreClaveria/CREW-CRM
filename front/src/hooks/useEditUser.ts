@@ -43,7 +43,7 @@ interface UseEditUserReturn {
 
 export const useEditUser = ({
   userId,
-  redirectPath = "/dashboard/admin/manage/users",
+  redirectPath = "/dashboard/pipeline/users",
   redirectDelay = 2000,
 }: UseEditUserProps): UseEditUserReturn => {
   // État initial du formulaire

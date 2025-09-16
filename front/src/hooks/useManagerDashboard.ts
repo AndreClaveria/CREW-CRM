@@ -82,7 +82,7 @@ export const useManagerDashboard = (): UseManagerDashboardReturn => {
       router.push(`/dashboard/user/teams/${teamId}`);
     } else {
       router.push(
-        `/dashboard/${routePrefix}/manage/company/teams/${effectiveCompanyId}/${teamId}`
+        `/dashboard/pipeline/company/teams/${effectiveCompanyId}/${teamId}`
       );
     }
   };
@@ -99,9 +99,7 @@ export const useManagerDashboard = (): UseManagerDashboardReturn => {
     if (routePrefix === "user") {
       router.push(`/dashboard/user/teams`);
     } else {
-      router.push(
-        `/dashboard/${routePrefix}/manage/company/teams/${effectiveCompanyId}`
-      );
+      router.push(`/dashboard/pipeline/company/teams/${effectiveCompanyId}`);
     }
   };
 

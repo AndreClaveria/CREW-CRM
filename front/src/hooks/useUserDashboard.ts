@@ -67,9 +67,9 @@ export const useUserDashboard = ({
       (userType === "manager" || userType === "admin") &&
       dashboardData?.company
     ) {
-      router.push(`/dashboard/${routePrefix}/manage/company`);
+      router.push(`/dashboard/pipeline/company`);
     } else if (userType === "manager" || userType === "admin") {
-      router.push(`/dashboard/${routePrefix}/manage/company/new`);
+      router.push(`/dashboard/pipeline/company/new`);
     }
   };
 
