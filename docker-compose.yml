@@ -20,11 +20,14 @@ services:
       - mongo_root_password
     healthcheck:
       test:
-        ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+        [
+          "CMD-SHELL",
+          'mongosh --eval ''db.runCommand("ping").ok'' --quiet || exit 1',
+        ]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 30s
+      retries: 5
+      start_period: 40s
 
   # Redis pour le cache et sessions
   redis:
