@@ -404,7 +404,11 @@ jobs:
           EMAIL_FROM_NAME=CRM Test
           MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongo:27017/notification-mail-sms-service?authSource=admin
           EOF
-
+          # data-seeder
+          cat > data-seeder/.env << 'EOF'
+          BDD_MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongo:27017/bdd-services?authSource=admin
+          AUTH_MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongo:27017/autenthication-service?authSource=admin
+          EOF
           # Metrics Service
           cat > metrics-service/.env << 'EOF'
           NODE_ENV=test
